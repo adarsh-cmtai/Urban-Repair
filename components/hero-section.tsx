@@ -1,3 +1,5 @@
+"use client"
+
 import { Button } from "@/components/ui/button";
 import { Wrench, DollarSign, LayoutGrid, Play, ChevronsDown } from "lucide-react";
 
@@ -21,12 +23,11 @@ export function HeroSection() {
   `;
 
   return (
-    <section className="relative min-h-screen w-full flex items-center overflow-hidden bg-gradient-to-br from-gray-900 via-slate-900 to-black">
+    <section className="relative min-h-screen w-full flex items-center overflow-hidden bg-gradient-to-br from-gray-900 via-red-950 to-black">
       <style>{animationStyles}</style>
 
       <div className="relative w-full max-w-screen-2xl mx-auto grid grid-cols-1 lg:grid-cols-2 items-center gap-8 lg:gap-16 py-20 px-6 sm:px-10">
         
-        {/* Left Content Column */}
         <div className="z-10 text-left text-white">
           <div 
             className="animate-fade-in-up" 
@@ -74,7 +75,6 @@ export function HeroSection() {
           </div>
         </div>
 
-        {/* Right Image Column */}
         <div className="relative w-full h-[60vh] lg:h-[80vh] animate-fade-in-up">
           <div className="absolute inset-0 w-full h-full lg:rounded-l-3xl overflow-hidden shadow-2xl">
             <img

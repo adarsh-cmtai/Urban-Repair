@@ -1,7 +1,8 @@
 "use client"
 
 import React, { useState, useEffect, useRef } from 'react';
-import { useSearchParams } from 'next/navigation';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Check, X, ChevronDown } from "lucide-react";
 import toast, { Toaster } from 'react-hot-toast';
 import { Header } from '@/components/header';
@@ -237,62 +238,74 @@ const ServiceModal = ({ service, isOpen, onClose, onAddToCart }: { service: Serv
 };
 
 export default function UrbanRepairServicesPage() {
+    const router = useRouter();
     const [categories, setCategories] = useState<CategoryWithServices[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedService, setSelectedService] = useState<Service | null>(null);
     const [cart, setCart] = useState<CartItem[]>([]);
-    
-    const [user, setUser] = useState<{ name: string } | null>(null); 
+    const [user, setUser] = useState<{ name: string } | null>(null);
     const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-    const [showCheckout, setShowCheckout] = useState(false);
 
     const categoryRefs = useRef<{ [key: string]: HTMLElement | null }>({});
 
     useEffect(() => {
-        const fetchServices = () => {
-            setLoading(true);
-            setTimeout(() => {
-                setCategories(categoriesData);
-                setLoading(false);
-            }, 1000); 
-        };
-        fetchServices();
+        setLoading(true);
+        setTimeout(() => {
+            setCategories(categoriesData);
+            setLoading(false);
+        }, 500);
+
+        const storedCart = localStorage.getItem('cart');
+        if (storedCart) {
+            setCart(JSON.parse(storedCart));
+        }
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+            setUser(JSON.parse(storedUser));
+        }
     }, []);
 
+    const updateCartInStorage = (newCart: CartItem[]) => {
+        setCart(newCart);
+        localStorage.setItem('cart', JSON.stringify(newCart));
+    }
+
     const handleAddToCart = (itemToAdd: CartItem) => {
-        setCart(prevCart => {
-            const existingItem = prevCart.find(item => item.subService._id === itemToAdd.subService._id);
-            if (existingItem) {
-                return prevCart.map(item =>
-                    item.subService._id === itemToAdd.subService._id
-                        ? { ...item, quantity: item.quantity + 1 }
-                        : item
-                );
-            }
-            return [...prevCart, itemToAdd];
-        });
+        let newCart;
+        const existingItem = cart.find(item => item.subService._id === itemToAdd.subService._id);
+        if (existingItem) {
+            newCart = cart.map(item =>
+                item.subService._id === itemToAdd.subService._id
+                    ? { ...item, quantity: item.quantity + 1 }
+                    : item
+            );
+        } else {
+            newCart = [...cart, itemToAdd];
+        }
+        updateCartInStorage(newCart);
         toast.success(`${itemToAdd.serviceName} added to cart!`);
     };
 
     const handleQuantityChange = (subServiceId: string, delta: number) => {
-        setCart(prevCart => {
-            const itemToUpdate = prevCart.find(item => item.subService._id === subServiceId);
-            if (!itemToUpdate) return prevCart;
+        const itemToUpdate = cart.find(item => item.subService._id === subServiceId);
+        if (!itemToUpdate) return;
 
-            const newQuantity = itemToUpdate.quantity + delta;
-            if (newQuantity <= 0) {
-                return prevCart.filter(item => item.subService._id !== subServiceId);
-            }
-            return prevCart.map(item =>
+        const newQuantity = itemToUpdate.quantity + delta;
+        let newCart;
+        if (newQuantity <= 0) {
+            newCart = cart.filter(item => item.subService._id !== subServiceId);
+        } else {
+            newCart = cart.map(item =>
                 item.subService._id === subServiceId
                     ? { ...item, quantity: newQuantity }
                     : item
             );
-        });
+        }
+        updateCartInStorage(newCart);
     };
-    
+
     const handleCategoryClick = (categoryId: string) => {
         categoryRefs.current[categoryId]?.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
     };
@@ -308,28 +321,15 @@ export default function UrbanRepairServicesPage() {
         const serviceToEdit = categories.flatMap(c => c.services).find(s => s._id === serviceId);
         if (serviceToEdit) handleOpenModal(serviceToEdit);
     };
-    
+
     const handleProceedToCheckout = () => {
         if (!user) {
             setIsLoginModalOpen(true);
             toast.error('Please log in to proceed.');
             return;
         }
-        setShowCheckout(true);
+        router.push('/checkout');
     };
-
-    if (showCheckout) {
-        return (
-            <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-                <div className="text-center p-10 bg-white rounded-lg shadow-lg">
-                    <h1 className="text-3xl font-bold mb-4">Checkout Page</h1>
-                    <p>This is where the checkout process would begin.</p>
-                    <p className="font-bold my-4 text-2xl">Total: ₹{cartTotal.toLocaleString('en-IN')}</p>
-                    <button onClick={() => setShowCheckout(false)} className="mt-4 bg-gray-800 text-white font-bold py-2 px-6 rounded-lg">Back to Services</button>
-                </div>
-            </div>
-        );
-    }
 
     const renderCart = () => {
         if (cart.length === 0) {
@@ -374,7 +374,7 @@ export default function UrbanRepairServicesPage() {
 
     return (
         <>
-        <Header/>
+            <Header />
             <Toaster position="top-center" reverseOrder={false} />
             <ServiceModal service={selectedService} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onAddToCart={handleAddToCart} />
             {isLoginModalOpen && (
@@ -382,7 +382,13 @@ export default function UrbanRepairServicesPage() {
                     <div className="bg-white p-8 rounded-lg shadow-lg text-center" onClick={e => e.stopPropagation()}>
                         <h2 className="text-2xl font-bold mb-4">Login Required</h2>
                         <p>Please log in to continue with your booking.</p>
-                        <button onClick={() => {setUser({name: 'Demo User'}); setIsLoginModalOpen(false);}} className="mt-6 bg-red-600 text-white font-bold py-2 px-6 rounded-lg">Login as Demo</button>
+                        <button onClick={() => {
+                            const demoUser = { name: 'Demo User' };
+                            setUser(demoUser);
+                            localStorage.setItem('user', JSON.stringify(demoUser));
+                            setIsLoginModalOpen(false);
+                            router.push('/checkout');
+                        }} className="mt-6 bg-red-600 text-white font-bold py-2 px-6 rounded-lg">Login as Demo</button>
                     </div>
                 </div>
             )}
@@ -430,7 +436,12 @@ export default function UrbanRepairServicesPage() {
                                                         </ul>
                                                         <div className="flex justify-between items-center mt-4">
                                                             <p className="font-extrabold text-lg text-gray-900">₹{service.price}</p>
-                                                            <button className="bg-red-50 text-red-600 border border-red-200 rounded-lg py-2 px-8 font-bold transition-all duration-200 hover:bg-red-600 hover:text-white" onClick={() => handleOpenModal(service)}>Add</button>
+                                                            <div className="flex items-center gap-2">
+                                                                <Link href={`/services/${service._id}`} className="text-gray-700 bg-white border border-gray-300 rounded-lg py-2 px-4 font-bold transition-colors duration-200 hover:bg-gray-100">
+                                                                    View Details
+                                                                </Link>
+                                                                <button className="bg-red-50 text-red-600 border border-red-200 rounded-lg py-2 px-8 font-bold transition-all duration-200 hover:bg-red-600 hover:text-white" onClick={() => handleOpenModal(service)}>Add</button>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -443,7 +454,7 @@ export default function UrbanRepairServicesPage() {
                     </div>
                 </div>
             </div>
-            <Footer/>
+            <Footer />
         </>
     );
 }
