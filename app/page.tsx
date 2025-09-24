@@ -1,7 +1,7 @@
 import { Header } from "@/components/header"
 import { HeroSection } from "@/components/hero-section"
 import { TrustBar } from "@/components/trust-bar"
-import { ServicesGrid } from "@/components/services-grid"
+import { SellApplianceSection } from "@/components/services-grid"
 import { WhyChooseUs } from "@/components/why-choose-us"
 import { BrandsShowcase } from "@/components/brands-showcase"
 import { ServiceAreaMap } from "@/components/service-area-map"
@@ -16,9 +16,9 @@ export default function HomePage() {
       <main>
         <HeroSection />
         <TrustBar />
-        <ServicesGrid />
+        <SellApplianceSection />
         <WhyChooseUs />
-        <BrandsShowcase />
+        {/* <BrandsShowcase /> */}
         <ServiceAreaMap />
         <TestimonialsSection />
         <PromotionalBanner />
