@@ -14,9 +14,9 @@ export default function HomePage() {
     <div className="min-h-screen bg-white">
       <Header />
       <main>
+        <SellApplianceSection />
         <HeroSection />
         <TrustBar />
-        <SellApplianceSection />
         <WhyChooseUs />
         {/* <BrandsShowcase /> */}
         <ServiceAreaMap />
