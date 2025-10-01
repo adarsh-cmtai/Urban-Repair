@@ -155,3 +155,16 @@ export const getAdminBookingById = async (id: string, token: string) => {
     return data;
 };
 
+export const createTestimonial = async (data: any, token: string) => {
+    return api.post('/admin/testimonials', data, { headers: { Authorization: `Bearer ${token}` } });
+};
+export const getAdminTestimonials = async (token: string) => {
+    const { data } = await api.get('/admin/testimonials', { headers: { Authorization: `Bearer ${token}` } });
+    return data;
+};
+export const updateTestimonial = async (id: string, data: any, token: string) => {
+    return api.put(`/admin/testimonials/${id}`, data, { headers: { Authorization: `Bearer ${token}` } });
+};
+export const deleteTestimonial = async (id: string, token: string) => {
+    return api.delete(`/admin/testimonials/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+};

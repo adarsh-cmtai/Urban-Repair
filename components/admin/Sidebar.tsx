@@ -15,6 +15,7 @@ import { useDispatch } from 'react-redux';
 import { logout } from '@/store/authSlice';
 import { useRouter } from 'next/navigation';
 import { BookOpen } from 'lucide-react';
+import { MessageSquare } from 'lucide-react';
 
 const navigation = [
   { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
@@ -24,6 +25,7 @@ const navigation = [
   { name: 'Create User', href: '/admin/users', icon: Users2 },
   { name: 'Service Catalog', href: '/admin/catalog', icon: Settings },
   { name: 'Blog Posts', href: '/admin/blog', icon: BookOpen },
+  { name: 'Testimonials', href: '/admin/testimonials', icon: MessageSquare },
 ];
 
 export function Sidebar() {

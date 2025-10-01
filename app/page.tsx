@@ -21,7 +21,7 @@ export default function HomePage() {
         {/* <BrandsShowcase /> */}
         <ServiceAreaMap />
         <TestimonialsSection />
-        <PromotionalBanner />
+        {/* <PromotionalBanner /> */}
       </main>
       <Footer />
     </div>
