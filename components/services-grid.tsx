@@ -12,7 +12,7 @@ const icons = {
   Refrigerator,
   Zap,
   Tv,
-  Wrench, 
+  Wrench,
   Microwave,
 }
 
@@ -44,7 +44,7 @@ export function SellApplianceSection() {
           icon: 'Wrench',
           title: category.name,
           description: `Expert solutions for your ${category.name.toLowerCase()}.`,
-          subCategories: category.services.flatMap((service: any) => 
+          subCategories: category.services.flatMap((service: any) =>
             service.subServices.map((subService: any) => ({
               serviceId: service._id,
               subServiceId: subService._id,
@@ -77,7 +77,7 @@ export function SellApplianceSection() {
       animation: fade-in 0.5s ease-out forwards; 
     }
   `;
-  
+
   if (isLoading) {
     return (
       <section className="bg-white text-gray-900 py-16">
@@ -90,9 +90,9 @@ export function SellApplianceSection() {
 
   if (!activeCategory) {
     return (
-        <section className="bg-white text-gray-900 py-16">
-            <p className="text-center text-gray-500">No services available at the moment.</p>
-        </section>
+      <section className="bg-white text-gray-900 py-16">
+        <p className="text-center text-gray-500">No services available at the moment.</p>
+      </section>
     );
   }
 
@@ -111,7 +111,7 @@ export function SellApplianceSection() {
         </div>
 
         <div className="grid grid-cols-12 gap-4 md:gap-8 relative">
-          <div className="col-span-12 lg:col-span-4 self-start lg:sticky top-24 h-fit">
+          <aside className="col-span-5 md:col-span-4 self-start sticky top-24 h-fit">
             <div className="space-y-3">
               {applianceCategories.map((category) => {
                 const Icon = icons[category.icon as keyof typeof icons] || Wrench
@@ -126,55 +126,55 @@ export function SellApplianceSection() {
                         : "bg-gray-50 border-transparent hover:bg-gray-100 hover:shadow-md"
                     }`}
                   >
-                    <Icon className={`w-6 h-6 md:w-8 md:h-8 mr-2 md:mr-4 flex-shrink-0 transition-colors duration-300 ${isActive ? "text-red-600" : "text-gray-500 group-hover:text-red-600"}`} />
+                    <Icon className={`w-6 h-6 md:w-7 md:h-7 mr-3 md:mr-4 flex-shrink-0 transition-colors duration-300 ${isActive ? "text-red-600" : "text-gray-500 group-hover:text-red-600"}`} />
                     <div>
                       <h3 className="font-semibold text-sm md:text-lg text-gray-800">{category.title}</h3>
-                      <p className="text-xs md:text-sm text-gray-500 hidden sm:block">{category.description}</p>
+                      <p className="text-xs text-gray-500 hidden sm:block">{category.description}</p>
                     </div>
                   </button>
                 )
               })}
             </div>
-          </div>
+          </aside>
 
-          <div
+          <main
             key={activeCategory.title}
-            className="col-span-12 lg:col-span-8 animate-fade-in"
+            className="col-span-7 md:col-span-8 animate-fade-in"
           >
-            <h3 className="font-heading font-bold text-xl md:text-3xl text-gray-900 mb-6 text-center lg:text-left sticky top-0 bg-white/80 backdrop-blur-sm py-2 z-10">
-                Services for <span className="text-red-600">{activeCategory.title.replace(' Repair', '')}</span>
+            <h3 className="font-heading font-bold text-xl md:text-3xl text-gray-900 mb-6 text-center lg:text-left">
+              Services for <span className="text-red-600">{activeCategory.title.replace(' Repair', '')}</span>
             </h3>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {activeCategory.subCategories.map((subCategory) => (
-                    <Card
-                        key={subCategory.title}
-                        className="group bg-white rounded-2xl border border-gray-200 shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-red-500 overflow-hidden flex flex-col h-full"
-                    >
-                        <div className="aspect-video w-full overflow-hidden bg-gray-50">
-                            <img 
-                                src={subCategory.image} 
-                                alt={subCategory.title} 
-                                className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105"
-                            />
-                        </div>
-                        <CardContent className="p-4 md:p-6 flex flex-col flex-grow">
-                            <h4 className="font-semibold text-base md:text-xl text-gray-900 mb-2">{subCategory.title}</h4>
-                            <p className="text-gray-600 text-xs md:text-sm leading-relaxed flex-grow mb-4">{subCategory.description}</p>
-                            <Link href={`/services/${subCategory.serviceId}?selected=${subCategory.subServiceId}`} passHref>
-                                <Button
-                                variant="ghost"
-                                className="p-0 h-auto font-semibold self-start text-red-600 hover:text-red-700 hover:bg-transparent text-sm md:text-base"
-                                >
-                                View Details
-                                <ArrowRight className="w-4 h-4 ml-2 transition-transform duration-300 group-hover:translate-x-1" />
-                                </Button>
-                            </Link>
-                        </CardContent>
-                    </Card>
-                ))}
+              {activeCategory.subCategories.map((subCategory) => (
+                <Card
+                  key={subCategory.title}
+                  className="group bg-white rounded-2xl border border-gray-200 shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-red-500 overflow-hidden flex flex-col h-full"
+                >
+                  <div className="aspect-video w-full overflow-hidden bg-gray-50">
+                    <img
+                      src={subCategory.image}
+                      alt={subCategory.title}
+                      className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105 p-2"
+                    />
+                  </div>
+                  <CardContent className="p-4 md:p-6 flex flex-col flex-grow">
+                    <h4 className="font-semibold text-base md:text-xl text-gray-900 mb-2">{subCategory.title}</h4>
+                    <p className="text-gray-600 text-xs md:text-sm leading-relaxed flex-grow mb-4">{subCategory.description}</p>
+                    <Link href={`/services/${subCategory.serviceId}?selected=${subCategory.subServiceId}`} passHref>
+                      <Button
+                        variant="ghost"
+                        className="p-0 h-auto font-semibold self-start text-red-600 hover:text-red-700 hover:bg-transparent text-sm md:text-base"
+                      >
+                        View Details
+                        <ArrowRight className="w-4 h-4 ml-2 transition-transform duration-300 group-hover:translate-x-1" />
+                      </Button>
+                    </Link>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
-          </div>
+          </main>
         </div>
       </div>
     </section>

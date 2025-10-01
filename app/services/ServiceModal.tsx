@@ -63,7 +63,7 @@ export function ServiceModal({ service, isOpen, onClose, onAddToCart }: { servic
                                     <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                                         {service.subServices.map((option) => (
                                             <button key={option._id} onClick={() => setSelectedSubService(option)} className={`border rounded-lg text-left transition-all duration-200 overflow-hidden ${selectedSubService?._id === option._id ? "border-red-500 bg-red-50 ring-2 ring-red-300" : "border-gray-300 hover:border-red-400 hover:bg-gray-50"}`}>
-                                                <img src={option.imageUrl || service.imageUrl} alt={option.name} className="w-full h-24 object-cover" />
+                                                <img src={option.imageUrl || service.imageUrl} alt={option.name} className="w-full h-24 object-contain" />
                                                 <div className="p-3">
                                                     <p className="font-bold text-gray-800 text-sm line-clamp-2">{option.name}</p>
                                                     <p className="font-semibold text-red-600 text-sm mt-1">₹{option.price}</p>
