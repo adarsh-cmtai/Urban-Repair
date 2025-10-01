@@ -1,23 +1,72 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Wrench, Refrigerator, Zap, Tv, Wind, Microwave, ArrowRight } from "lucide-react"
-import { applianceCategories } from "@/lib/appliance-data"
+import { Wrench, Refrigerator, Zap, Tv, Wind, Microwave, ArrowRight, Loader2 } from "lucide-react"
+import { getFullCatalog } from "@/services/publicService"
 
 const icons = {
   Wind,
   Refrigerator,
   Zap,
   Tv,
-  Wrench,
+  Wrench, 
   Microwave,
 }
 
+interface SubCategory {
+  serviceId: string;
+  subServiceId: string;
+  title: string;
+  description: string;
+  image: string;
+}
+
+interface ApplianceCategory {
+  icon: string;
+  title: string;
+  description: string;
+  subCategories: SubCategory[];
+}
+
 export function SellApplianceSection() {
-  const [activeCategory, setActiveCategory] = useState(applianceCategories[0])
+  const [applianceCategories, setApplianceCategories] = useState<ApplianceCategory[]>([]);
+  const [activeCategory, setActiveCategory] = useState<ApplianceCategory | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await getFullCatalog();
+        const transformedData = response.data.map((category: any) => ({
+          icon: 'Wrench',
+          title: category.name,
+          description: `Expert solutions for your ${category.name.toLowerCase()}.`,
+          subCategories: category.services.flatMap((service: any) => 
+            service.subServices.map((subService: any) => ({
+              serviceId: service._id,
+              subServiceId: subService._id,
+              title: subService.name,
+              description: `Reliable repair for ${subService.name.toLowerCase()}.`,
+              image: subService.imageUrl,
+            }))
+          ),
+        }));
+        setApplianceCategories(transformedData);
+        if (transformedData.length > 0) {
+          setActiveCategory(transformedData[0]);
+        }
+      } catch (error) {
+        console.error("Failed to fetch catalog data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const animationStyles = `
     @keyframes fade-in { 
@@ -27,12 +76,30 @@ export function SellApplianceSection() {
     .animate-fade-in { 
       animation: fade-in 0.5s ease-out forwards; 
     }
-  `
+  `;
+  
+  if (isLoading) {
+    return (
+      <section className="bg-white text-gray-900 py-16">
+        <div className="flex justify-center items-center">
+          <Loader2 className="w-12 h-12 animate-spin text-brand-red" />
+        </div>
+      </section>
+    );
+  }
+
+  if (!activeCategory) {
+    return (
+        <section className="bg-white text-gray-900 py-16">
+            <p className="text-center text-gray-500">No services available at the moment.</p>
+        </section>
+    );
+  }
 
   return (
     <section className="bg-white text-gray-900">
       <style>{animationStyles}</style>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 md:py-2 lg:py-2">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
         <div className="text-center mb-12 md:mb-16">
           <h2 className="font-heading font-bold text-3xl sm:text-4xl lg:text-5xl text-gray-900 mb-4 text-balance">
             Our Expert Repair Services
@@ -44,7 +111,7 @@ export function SellApplianceSection() {
         </div>
 
         <div className="grid grid-cols-12 gap-4 md:gap-8 relative">
-          <div className="col-span-5 lg:col-span-4 self-start sticky top-24 h-fit">
+          <div className="col-span-12 lg:col-span-4 self-start lg:sticky top-24 h-fit">
             <div className="space-y-3">
               {applianceCategories.map((category) => {
                 const Icon = icons[category.icon as keyof typeof icons] || Wrench
@@ -72,13 +139,13 @@ export function SellApplianceSection() {
 
           <div
             key={activeCategory.title}
-            className="col-span-7 lg:col-span-8 animate-fade-in"
+            className="col-span-12 lg:col-span-8 animate-fade-in"
           >
             <h3 className="font-heading font-bold text-xl md:text-3xl text-gray-900 mb-6 text-center lg:text-left sticky top-0 bg-white/80 backdrop-blur-sm py-2 z-10">
                 Services for <span className="text-red-600">{activeCategory.title.replace(' Repair', '')}</span>
             </h3>
             
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {activeCategory.subCategories.map((subCategory) => (
                     <Card
                         key={subCategory.title}
