@@ -3,11 +3,49 @@
 import { useEffect, useState, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
-import { getAdminBookings, getAllTechnicians, assignTechnician, updateBookingStatus } from '@/services/adminService';
+import { getAdminBookings, getAllTechnicians } from '@/services/adminService';
 import { BookingsTable } from '@/components/admin/bookings/BookingsTable';
 import { AssignTechnicianModal } from '@/components/admin/bookings/AssignTechnicianModal';
-import { Loader2, Search } from 'lucide-react';
-import { toast } from 'react-hot-toast';
+import { Loader2, Search, Filter, Wrench, Inbox } from 'lucide-react';
+
+// Skeleton Component for a better loading experience
+function TableSkeleton() {
+    return (
+        <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+            <div className="animate-pulse">
+                <div className="grid grid-cols-6 gap-4 px-4 py-3 bg-slate-50 rounded-t-lg">
+                    <div className="h-4 bg-slate-200 rounded col-span-2"></div>
+                    <div className="h-4 bg-slate-200 rounded"></div>
+                    <div className="h-4 bg-slate-200 rounded"></div>
+                    <div className="h-4 bg-slate-200 rounded"></div>
+                    <div className="h-4 bg-slate-200 rounded"></div>
+                </div>
+                <div className="space-y-2 mt-2 p-4">
+                    {[...Array(5)].map((_, i) => (
+                        <div key={i} className="grid grid-cols-6 gap-4 items-center">
+                            <div className="h-5 bg-slate-200 rounded col-span-2"></div>
+                            <div className="h-5 bg-slate-200 rounded"></div>
+                            <div className="h-5 bg-slate-200 rounded"></div>
+                            <div className="h-5 bg-slate-200 rounded"></div>
+                            <div className="h-5 bg-slate-200 rounded"></div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </div>
+    );
+}
+
+// Empty State Component
+function EmptyState() {
+    return (
+        <div className="bg-white text-center py-20 px-6 rounded-xl shadow-sm border border-slate-200">
+            <Inbox className="mx-auto h-16 w-16 text-slate-300" />
+            <h3 className="mt-4 text-lg font-semibold text-slate-700">No Bookings Found</h3>
+            <p className="mt-1 text-sm text-slate-500">Try adjusting your filters or check back later.</p>
+        </div>
+    );
+}
 
 export default function AdminBookingsPage() {
     const [bookings, setBookings] = useState([]);
@@ -34,6 +72,8 @@ export default function AdminBookingsPage() {
         try {
             const response = await getAdminBookings(filters, token);
             setBookings(response.data);
+        } catch (error) {
+            console.error("Failed to fetch bookings:", error);
         } finally {
             setIsLoading(false);
         }
@@ -65,46 +105,55 @@ export default function AdminBookingsPage() {
 
     return (
         <div className="space-y-8">
-            <h1 className="font-montserrat text-3xl font-bold text-neutral-800">Booking Management</h1>
+            <div>
+                <h1 className="font-heading text-4xl font-extrabold text-slate-800">Booking Management</h1>
+                <p className="mt-2 text-slate-500">View, filter, and manage all customer service requests.</p>
+            </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-white rounded-lg shadow">
-                 <div className="relative">
-                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                        <Search className="h-5 w-5 text-gray-400" />
-                    </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-white rounded-xl shadow-sm border border-slate-200">
+                <div className="relative">
+                    <Search className="h-5 w-5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
                     <input
                         type="text"
-                        placeholder="Search by customer name/phone..."
+                        placeholder="Search customer name/phone..."
                         onChange={(e) => debouncedSearch(e.target.value)}
-                        className="block w-full rounded-md border-gray-300 pl-10"
+                        className="pl-10 w-full h-12 text-base bg-slate-50 rounded-lg border-slate-300 focus:ring-red-500 focus:border-red-500"
                     />
                 </div>
-                <select
-                    value={filters.status}
-                    onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value }))}
-                    className="w-full rounded-md border-gray-300"
-                >
-                    <option value="">All Statuses</option>
-                    <option value="Pending">Pending</option>
-                    <option value="Assigned">Assigned</option>
-                    <option value="InProgress">In Progress</option>
-                    <option value="Completed">Completed</option>
-                    <option value="Cancelled">Cancelled</option>
-                </select>
-                 <select
-                    value={filters.technicianId}
-                    onChange={(e) => setFilters(prev => ({ ...prev, technicianId: e.target.value }))}
-                    className="w-full rounded-md border-gray-300"
-                >
-                    <option value="">All Technicians</option>
-                    {technicians.map((tech: any) => <option key={tech._id} value={tech._id}>{tech.name}</option>)}
-                </select>
+                <div className="relative">
+                    <Filter className="h-5 w-5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                    <select
+                        value={filters.status}
+                        onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value }))}
+                        className="pl-10 pr-4 appearance-none w-full h-12 text-base bg-slate-50 rounded-lg border-slate-300 focus:ring-red-500 focus:border-red-500"
+                    >
+                        <option value="">All Statuses</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Assigned">Assigned</option>
+                        <option value="InProgress">In Progress</option>
+                        <option value="Completed">Completed</option>
+                        <option value="Cancelled">Cancelled</option>
+                    </select>
+                </div>
+                <div className="relative">
+                    <Wrench className="h-5 w-5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                    <select
+                        value={filters.technicianId}
+                        onChange={(e) => setFilters(prev => ({ ...prev, technicianId: e.target.value }))}
+                        className="pl-10 pr-4 appearance-none w-full h-12 text-base bg-slate-50 rounded-lg border-slate-300 focus:ring-red-500 focus:border-red-500"
+                    >
+                        <option value="">All Technicians</option>
+                        {technicians.map((tech: any) => <option key={tech._id} value={tech._id}>{tech.name}</option>)}
+                    </select>
+                </div>
             </div>
 
             {isLoading ? (
-                 <div className="flex items-center justify-center h-64"><Loader2 className="w-8 h-8 text-brand-red animate-spin" /></div>
-            ) : (
+                 <TableSkeleton />
+            ) : bookings.length > 0 ? (
                 <BookingsTable bookings={bookings} onAssignClick={handleAssignClick} onStatusUpdate={handleStatusUpdate} />
+            ) : (
+                <EmptyState />
             )}
             
             <AssignTechnicianModal 

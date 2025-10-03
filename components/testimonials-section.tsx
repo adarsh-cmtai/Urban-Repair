@@ -83,11 +83,11 @@ export function TestimonialsSection() {
         <div className="relative max-w-5xl mx-auto">
           <Card className="w-full rounded-2xl border-0 shadow-xl overflow-hidden">
             <div className="grid grid-cols-1 md:grid-cols-2">
-              <div className="relative aspect-square md:aspect-auto">
+              <div className="relative aspect-square md:aspect-auto rounded-lg">
                 <img
                   src={activeTestimonial.imageUrl}
                   alt={activeTestimonial.name}
-                  className={`w-full h-full object-cover transition-opacity duration-300 ${isAnimating ? 'opacity-0' : 'opacity-100'}`}
+                  className={`w-full h-full object-cover transition-opacity rounded-2xl duration-300  ${isAnimating ? 'opacity-0' : 'opacity-100'}`}
                 />
               </div>
               <div className="relative p-8 md:p-12 flex flex-col justify-between">

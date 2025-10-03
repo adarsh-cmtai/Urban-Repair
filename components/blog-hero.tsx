@@ -21,7 +21,7 @@ export function BlogHero() {
           Expert advice, maintenance tips, and the latest trends in home appliances and interior design.
         </p>
 
-        <div className="relative max-w-2xl mx-auto mb-8">
+        {/* <div className="relative max-w-2xl mx-auto mb-8">
           <Input 
             type="search" 
             placeholder="Search for articles, tips, and guides..."
@@ -34,7 +34,7 @@ export function BlogHero() {
           >
             <Search className="h-6 w-6 text-white" />
           </Button>
-        </div>
+        </div> */}
 
         <div className="flex flex-wrap items-center justify-center gap-4">
           <span className="text-slate-600 font-medium">Popular topics:</span>

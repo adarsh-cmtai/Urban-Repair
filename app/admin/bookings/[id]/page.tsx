@@ -98,7 +98,7 @@ export default function AdminBookingDetailsPage() {
                             <div>
                                 <h4 className="text-sm font-medium text-gray-500 mb-2">Before Service Photo</h4>
                                 {booking.beforeServiceImage ? (
-                                    <Link href={booking.beforeServiceImage} target="_blank"><img src={booking.beforeServiceImage} alt="Before service" className="aspect-video w-full object-cover rounded-lg"/></Link>
+                                    <Link href={booking.beforeServiceImage} target="_blank"><img src={booking.beforeServiceImage} alt="Before service" className="aspect-video w-full object-contain rounded-lg"/></Link>
                                 ) : (
                                     <ImagePlaceholder label="Not Uploaded"/>
                                 )}
@@ -106,7 +106,7 @@ export default function AdminBookingDetailsPage() {
                              <div>
                                 <h4 className="text-sm font-medium text-gray-500 mb-2">After Service Photo</h4>
                                 {booking.afterServiceImage ? (
-                                     <Link href={booking.afterServiceImage} target="_blank"><img src={booking.afterServiceImage} alt="After service" className="aspect-video w-full object-cover rounded-lg"/></Link>
+                                     <Link href={booking.afterServiceImage} target="_blank"><img src={booking.afterServiceImage} alt="After service" className="aspect-video w-full object-contain rounded-lg"/></Link>
                                 ) : (
                                     <ImagePlaceholder label="Not Uploaded"/>
                                 )}
