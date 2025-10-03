@@ -1,5 +1,9 @@
+'use client';
+
 import { useState, FormEvent } from 'react';
 import { Star, Loader2 } from 'lucide-react';
+import { toast } from 'react-hot-toast';
+import { submitBookingReview } from '@/services/customerService';
 
 interface ReviewFormProps {
     bookingId: string;
@@ -14,14 +18,28 @@ export function ReviewForm({ bookingId, token, onSubmitSuccess }: ReviewFormProp
     
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
-        // Here you would call your submitBookingReview service function
-        // For brevity, we'll assume it works and just call the success handler
+        
+        if (rating === 0) {
+            toast.error('Please select a star rating.');
+            return;
+        }
         setIsLoading(true);
-        setTimeout(() => {
-            console.log({ bookingId, rating, comment, token });
-            setIsLoading(false);
+
+        try {
+            await toast.promise(
+                submitBookingReview(bookingId, { rating, comment }, token),
+                {
+                    loading: 'Submitting your review...',
+                    success: 'Thank you for your feedback!',
+                    error: (err) => err.response?.data?.message || 'Failed to submit review.',
+                }
+            );
             onSubmitSuccess();
-        }, 1000);
+        } catch (error) {
+            // Toast promise already handles the error toast
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -46,13 +64,13 @@ export function ReviewForm({ bookingId, token, onSubmitSuccess }: ReviewFormProp
                     rows={4}
                     value={comment}
                     onChange={(e) => setComment(e.target.value)}
-                    className="mt-2 block w-full rounded-lg border-gray-300 shadow-sm focus:border-brand-red focus:ring-brand-red"
+                    className="mt-2 block w-full rounded-lg border-gray-300 shadow-sm"
                 />
             </div>
             <button
                 type="submit"
                 disabled={isLoading || rating === 0}
-                className="w-full bg-brand-red text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-700 disabled:bg-red-300 transition-colors flex justify-center items-center"
+                className="w-full bg-brand-red text-white font-semibold py-2 px-4 rounded-lg flex justify-center items-center disabled:bg-red-300"
             >
                 {isLoading ? <Loader2 className="animate-spin" /> : 'Submit Review'}
             </button>

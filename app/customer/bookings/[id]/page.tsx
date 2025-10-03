@@ -1,11 +1,11 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import { getBookingDetails } from '@/services/customerService';
-import { Loader2, User, Phone, MapPin, Wrench, IndianRupee, Star } from 'lucide-react';
+import { Loader2, User, Phone, MapPin, Wrench, IndianRupee, Star, Calendar, Clock, MessageSquare } from 'lucide-react';
 import { BookingStatusTracker } from '@/components/customer/BookingStatusTracker';
 import { ReviewForm } from '@/components/customer/ReviewForm';
 import { StatusBadge } from '@/components/customer/StatusBadge';
@@ -54,10 +54,10 @@ export default function BookingDetailsPage() {
                                 <Star key={i} className={`w-5 h-5 ${i < booking.review.rating ? 'text-yellow-400' : 'text-gray-300'}`} fill="currentColor"/>
                              ))}
                         </div>
-                        <p className="text-neutral-600 italic">"{booking.review.comment}"</p>
+                        {booking.review.comment && <p className="text-neutral-600 italic">"{booking.review.comment}"</p>}
                     </div>
                 )}
-
+                
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div className="space-y-4">
                         <h3 className="font-montserrat font-bold text-lg text-neutral-800">Service Information</h3>

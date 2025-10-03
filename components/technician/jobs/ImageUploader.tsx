@@ -45,7 +45,7 @@ export function ImageUploader({ label, imageUrl, onUploadSuccess }: Props) {
                 {isUploading ? (
                      <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
                 ) : imageUrl ? (
-                    <img src={imageUrl} alt={label} className="h-full w-full object-cover rounded-lg"/>
+                    <img src={imageUrl} alt={label} className="h-full w-full object-contain rounded-lg"/>
                 ) : (
                     <div className="text-center">
                         <Camera className="mx-auto h-10 w-10 text-gray-300" />

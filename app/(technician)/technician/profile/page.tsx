@@ -4,14 +4,16 @@ import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import { getTechnicianProfile } from '@/services/technicianService';
-import { Loader2, User, Star, Lock } from 'lucide-react';
+import { Loader2, User, Star, Lock, MessageSquare } from 'lucide-react';
 import { ProfileForm } from '@/components/technician/profile/ProfileForm';
 import { PerformanceStats } from '@/components/technician/profile/PerformanceStats';
 import { PasswordForm } from '@/components/technician/profile/PasswordForm';
+import { ReviewList } from '@/components/technician/profile/ReviewList';
 
 const tabs = [
     { name: 'Profile Details', icon: User, key: 'profile' },
     { name: 'Performance', icon: Star, key: 'performance' },
+    { name: 'My Reviews', icon: MessageSquare, key: 'reviews' },
     { name: 'Security', icon: Lock, key: 'security' },
 ];
 
@@ -47,6 +49,8 @@ export default function TechnicianProfilePage() {
                 return <ProfileForm user={profileData} onUpdate={fetchProfile} />;
             case 'performance':
                 return <PerformanceStats rating={profileData.averageRating || 0} totalReviews={profileData.totalReviews || 0} />;
+            case 'reviews':
+                return <ReviewList reviews={profileData.reviews || []} />;
             case 'security':
                 return <PasswordForm />;
             default:
