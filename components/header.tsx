@@ -116,7 +116,7 @@ export function Header() {
                       <div className="absolute top-full left-1/2 -translate-x-1/2 mt-4 w-64 bg-white rounded-xl shadow-lg p-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
                         {link.submenu.map((sublink: any) => (
                           <Link key={sublink.label} href={sublink.href} className="flex items-center gap-3 p-3 rounded-lg text-slate-700 hover:bg-red-50">
-                            <sublink.icon className="w-5 h-5 text-red-600" />
+                            {/* <sublink.icon className="w-5 h-5 text-red-600" /> */}
                             <span>{sublink.label}</span>
                           </Link>
                         ))}
