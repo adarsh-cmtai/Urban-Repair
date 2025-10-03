@@ -63,7 +63,7 @@ export function AssignTechnicianModal({ isOpen, onClose, bookingId, onAssignSucc
                                             onChange={(e) => setSelectedTechnician(e.target.value)}
                                             className="w-full rounded-md border-gray-300"
                                         >
-                                            <option value="">Select a Technician</option>
+                                            <option value="">Select an Active Technician</option>
                                             {technicians.map((tech: any) => (
                                                 <option key={tech._id} value={tech._id}>{tech.name} - {tech.specialization}</option>
                                             ))}

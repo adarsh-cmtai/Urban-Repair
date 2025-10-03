@@ -180,7 +180,7 @@ export default function UrbanRepairServicesPage() {
                                     {user ? (
                                         <button onClick={handleProceedToCheckout} className="bg-red-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-red-700">View Cart</button>
                                     ) : (
-                                        <button onClick={handleProceedToCheckout} className="bg-orange-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-orange-600">Login to Continue</button>
+                                        <button onClick={handleProceedToCheckout} className="bg-orange-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-orange-600">Login</button>
                                     )}
                                 </div>
                             </div>

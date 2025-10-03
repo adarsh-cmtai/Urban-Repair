@@ -35,15 +35,15 @@ export function TrustBar() {
   `;
 
   return (
-    <section className="py-20 bg-gradient-to-b from-white to-slate-50">
+    <section className="py-24 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-50 to-white">
       <style>{animationStyles}</style>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold font-heading text-gray-900">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl md:text-5xl font-extrabold font-heading text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-slate-800">
             Why Thousands Trust Us
           </h2>
-          <p className="mt-3 text-lg text-gray-600">
-            Our commitment to quality and service speaks for itself.
+          <p className="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">
+            Our commitment to quality and service speaks for itself through numbers we're proud of.
           </p>
         </div>
         
@@ -53,19 +53,16 @@ export function TrustBar() {
             return (
               <div
                 key={index}
-                className="animate-fade-in-up bg-white p-8 rounded-2xl shadow-lg border border-gray-100 transition-all duration-300 hover:shadow-xl hover:-translate-y-2"
+                className="animate-fade-in-up flex flex-col items-center justify-center text-center p-8 rounded-2xl bg-white/60 backdrop-blur-sm border border-slate-200/80 shadow-xl shadow-slate-300/40 transition-all duration-300 hover:shadow-2xl hover:shadow-red-500/20 hover:-translate-y-2 hover:border-white"
                 style={{ animationDelay: `${index * 150}ms`, animationFillMode: 'backwards' }}
               >
-                <div className="flex items-center justify-center w-16 h-16 mb-6 rounded-full bg-gradient-to-br from-red-500 to-orange-500 shadow-md">
+                <div className="flex items-center justify-center w-16 h-16 mb-6 rounded-full bg-gradient-to-br from-red-600 to-red-700 shadow-lg shadow-red-500/40">
                   <Icon className="w-8 h-8 text-white" />
                 </div>
-                <div className="text-left">
-                  <p className="font-heading font-bold text-4xl text-gray-900 mb-1">
-                    {metric.number}
-                    {metric.text.includes("Rating") && <span className="text-2xl text-yellow-500"> ★</span>}
-                  </p>
-                  <p className="text-base text-gray-600 font-medium">{metric.text}</p>
-                </div>
+                <p className="font-heading font-extrabold text-5xl text-slate-900">
+                  {metric.number}
+                </p>
+                <p className="mt-2 text-base text-slate-600 font-medium">{metric.text}</p>
               </div>
             );
           })}

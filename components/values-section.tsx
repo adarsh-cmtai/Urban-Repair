@@ -1,6 +1,5 @@
 "use client"
 
-import { Card, CardContent } from "@/components/ui/card"
 import { Shield, Clock, Heart, Award, Users, Lightbulb } from "lucide-react"
 
 const values = [
@@ -17,17 +16,17 @@ const values = [
   {
     icon: Heart,
     title: "Customer First",
-    description: "Every decision we make is centered around providing the best possible experience for our customers.",
+    description: "Every decision we make is centered around providing the best possible experience and outcome for our customers.",
   },
   {
     icon: Award,
     title: "Quality Excellence",
-    description: "We use only genuine parts, premium materials, and follow industry best practices in all our services.",
+    description: "We use only genuine parts, premium materials, and follow industry best practices in all of our services.",
   },
   {
     icon: Users,
     title: "Expert Team",
-    description: "Our certified technicians and designers undergo continuous training to stay updated with the latest technologies.",
+    description: "Our certified technicians and designers undergo continuous training to stay ahead with the latest technologies.",
   },
   {
     icon: Lightbulb,
@@ -46,42 +45,41 @@ export function ValuesSection() {
   `;
 
   return (
-    <section className="py-12 bg-slate-50 relative overflow-hidden">
+    <section className="py-24 bg-slate-50 relative overflow-hidden">
       <style>{animationStyles}</style>
       
-      <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-tr from-red-100 to-orange-100 rounded-full opacity-50 blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
-      <div className="absolute bottom-0 right-0 w-96 h-96 bg-gradient-to-br from-red-100 to-orange-100 rounded-full opacity-50 blur-3xl translate-x-1/2 translate-y-1/2"></div>
+      <div className="absolute top-0 left-0 w-96 h-96 bg-red-100 rounded-full opacity-40 blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
+      <div className="absolute bottom-0 right-0 w-96 h-96 bg-red-100 rounded-full opacity-40 blur-3xl translate-x-1/2 translate-y-1/2"></div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
         <div className="text-center mb-16">
-          <h2 className="font-heading font-bold text-3xl md:text-4xl lg:text-5xl text-gray-900 mb-4 text-balance">
+          <h2 className="font-heading font-extrabold text-4xl md:text-5xl text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-slate-800 mb-4 text-balance">
             Our Core Values
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto text-pretty">
+          <p className="text-lg text-slate-600 max-w-2xl mx-auto text-pretty">
             The principles that guide everything we do and shape our commitment to excellence.
           </p>
-          <div className="mt-4 h-1 w-24 bg-red-600 mx-auto rounded-full"></div>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {values.map((value, index) => (
-            <div 
-              key={index} 
-              className="group relative p-px rounded-2xl animate-fade-in-up" 
-              style={{ animationDelay: `${index * 150}ms`, animationFillMode: 'backwards' }}
-            >
-              <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-red-200 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              <div className="relative h-full bg-white/60 backdrop-blur-lg rounded-[15px] p-8 text-center">
-                <div className="relative inline-block mb-6">
-                  <div className="w-16 h-16 bg-gradient-to-br from-red-500 to-orange-500 text-white rounded-xl flex items-center justify-center transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-110 shadow-lg">
-                    <value.icon className="h-8 w-8" />
+          {values.map((value, index) => {
+            const Icon = value.icon;
+            return (
+              <div 
+                key={index} 
+                className="animate-fade-in-up bg-white p-8 rounded-2xl shadow-xl shadow-slate-300/40 border border-slate-200/80 transition-all duration-300 hover:shadow-2xl hover:shadow-red-500/10 hover:-translate-y-2" 
+                style={{ animationDelay: `${index * 150}ms`, animationFillMode: 'backwards' }}
+              >
+                <div className="mb-6">
+                  <div className="w-14 h-14 bg-red-100 text-red-600 rounded-xl flex items-center justify-center">
+                    <Icon className="h-7 w-7" />
                   </div>
                 </div>
-                <h3 className="font-heading text-xl font-bold text-gray-900 mb-3">{value.title}</h3>
-                <p className="text-gray-600 text-pretty leading-relaxed">{value.description}</p>
+                <h3 className="font-heading text-xl font-bold text-slate-900 mb-3">{value.title}</h3>
+                <p className="text-slate-600 text-pretty leading-relaxed">{value.description}</p>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>

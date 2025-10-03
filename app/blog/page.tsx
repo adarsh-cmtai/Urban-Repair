@@ -28,7 +28,7 @@ export default async function BlogPage() {
       <Header />
       <main>
         <BlogHero />
-        <BlogCategories />
+        {/* <BlogCategories /> */}
         <BlogGrid articles={articles} />
         <NewsletterSignup />
       </main>

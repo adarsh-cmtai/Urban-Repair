@@ -11,10 +11,11 @@ export default function ContactPage() {
       <Header />
       <main>
         <ContactHero />
-        <div className="grid lg:grid-cols-2 gap-0">
+        {/* <div className="grid lg:grid-cols-2 gap-0"> */}
           <ContactForm />
-          <ContactInfo />
-        </div>
+          {/* <ContactInfo /> */}
+        {/* </div> */}
+        <ContactInfo />
         <LocationMap />
       </main>
       <Footer />

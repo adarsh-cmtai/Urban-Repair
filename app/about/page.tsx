@@ -14,7 +14,7 @@ export default function AboutPage() {
         <AboutHero />
         <CompanyStory />
         <ValuesSection />
-        <TeamSection />
+        {/* <TeamSection /> */}
         <AchievementsSection />
       </main>
       <Footer />
