@@ -10,76 +10,58 @@ export default function PrivacyPolicyPage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-white p-8 sm:p-12 rounded-2xl shadow-lg border border-gray-200">
             <div className="flex flex-col items-center text-center mb-12">
-              <div className="flex items-center justify-center w-20 h-20 bg-red-100 text-brand-red rounded-full mb-6">
+              <div className="flex items-center justify-center w-20 h-20 bg-red-100 text-red-600 rounded-full mb-6">
                 <ShieldCheck className="w-10 h-10" />
               </div>
-              <h1 className="font-montserrat text-4xl sm:text-5xl font-extrabold text-neutral-800">
+              <h1 className="font-heading text-4xl sm:text-5xl font-extrabold text-slate-800">
                 Privacy Policy
               </h1>
-              <p className="mt-4 text-neutral-500">
-                Last Updated: October 26, 2023
+              <p className="mt-4 text-slate-500 text-lg max-w-2xl mx-auto">
+                At Urban Repair Expert, we believe that the information you share with us is not just data — it’s a matter of trust. We handle every client’s privacy with utmost respect, responsibility, and care.
               </p>
             </div>
 
-            <div className="prose prose-lg max-w-none prose-h2:font-montserrat prose-h2:font-bold prose-h2:text-2xl prose-h2:mb-4 prose-h2:mt-10 prose-p:text-neutral-600 prose-li:text-neutral-600 prose-a:text-brand-red hover:prose-a:text-red-700">
-              <p>
-                Welcome to [Your Company Name] ("we," "our," or "us"). We are committed to protecting your privacy. This
-                Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our
-                website [Your Website URL] and use our services.
-              </p>
+            <div className="prose prose-lg max-w-none prose-h2:font-heading prose-h2:font-bold prose-h2:text-2xl prose-h2:mb-4 prose-h2:mt-10 prose-p:text-slate-600 prose-ul:list-none prose-ul:p-0 prose-li:text-slate-600 prose-li:mb-2 prose-li:flex prose-li:items-start prose-a:text-red-600 prose-a:font-semibold hover:prose-a:text-red-700">
               
-              <h2>1. Information We Collect</h2>
-              <p>
-                We may collect personal information that you voluntarily provide to us when you book a service, sell an
-                appliance, request a consultation, or contact us. This information may include:
-              </p>
+              <h2>📋 Information We Collect</h2>
               <ul>
-                <li><strong>Personal Identification Information:</strong> Name, email address, phone number, and physical address.</li>
-                <li><strong>Appliance Information:</strong> Details about the appliances you wish to repair or sell, such as model, brand, and condition.</li>
-                <li><strong>Payment Information:</strong> While we use third-party payment processors, we may collect transaction details. We do not store your credit card information.</li>
-                <li><strong>Communication Data:</strong> Records of your correspondence with us, including emails and chat logs.</li>
+                <li><span className="mr-3 text-red-500">✓</span>Your name, mobile number, and email address</li>
+                <li><span className="mr-3 text-red-500">✓</span>Location information (to provide our services)</li>
+                <li><span className="mr-3 text-red-500">✓</span>Details of your appliances (for repair or resale purposes)</li>
+                <li><span className="mr-3 text-red-500">✓</span>Payment details through Razorpay</li>
+                <li><span className="mr-3 text-red-500">✓</span>Website usage data, such as cookies and session information</li>
               </ul>
 
-              <h2>2. How We Use Your Information</h2>
-              <p>
-                We use the information we collect for various purposes, including to:
-              </p>
+              <h2>🔐 How We Use Your Information</h2>
               <ul>
-                <li>Provide, operate, and maintain our services.</li>
-                <li>Process your transactions and manage your appointments.</li>
-                <li>Improve, personalize, and expand our services.</li>
-                <li>Communicate with you, either directly or through one of our partners, for customer service, to provide you with updates, and for marketing purposes.</li>
-                <li>Prevent fraudulent activities.</li>
+                <li><span className="mr-3 text-red-500">✓</span>To process and deliver services</li>
+                <li><span className="mr-3 text-red-500">✓</span>To send updates related to your service</li>
+                <li><span className="mr-3 text-red-500">✓</span>To manage complaints and follow-ups efficiently</li>
+                <li><span className="mr-3 text-red-500">✓</span>To ensure secure payment and data storage via verified platforms like Razorpay and AWS</li>
               </ul>
+              <blockquote className="border-l-4 border-red-500 bg-red-50 text-slate-700 p-4 rounded-r-lg mt-6">
+                We never share your information with third parties without your consent.
+              </blockquote>
 
-              <h2>3. Disclosure of Your Information</h2>
+              <h2>☁️ Data Security</h2>
               <p>
-                We do not sell, trade, or otherwise transfer your personally identifiable information to outside parties. This does not include trusted third parties who assist us in operating our website, conducting our business, or servicing you, so long as those parties agree to keep this information confidential.
-              </p>
-              
-              <h2>4. Security of Your Information</h2>
-              <p>
-                We use administrative, technical, and physical security measures to help protect your personal information. While we have taken reasonable steps to secure the personal information you provide to us, please be aware that despite our efforts, no security measures are perfect or impenetrable.
+                Your data is stored securely and encrypted on our AWS S3 servers. We follow industry-standard security measures to ensure your information is tamper-proof and protected from unauthorized access.
               </p>
 
-              <h2>5. Your Data Protection Rights</h2>
+              <h2>🧾 Cookies & Tracking</h2>
               <p>
-                Depending on your location, you may have the following rights regarding your personal information:
+                Our website uses certain cookies to enhance your browsing experience. You may disable cookies through your browser settings if you prefer.
               </p>
-              <ul>
-                <li>The right to access – You have the right to request copies of your personal data.</li>
-                <li>The right to rectification – You have the right to request that we correct any information you believe is inaccurate.</li>
-                <li>The right to erasure – You have the right to request that we erase your personal data, under certain conditions.</li>
-              </ul>
               
-              <h2>6. Contact Us</h2>
+              <h2>📞 Your Rights</h2>
               <p>
-                If you have any questions or concerns about this Privacy Policy, please contact us at:
+                You can access, update, or delete your personal information at any time. To do so, please email us at: <a href="mailto:support@urbanrepairexpert.com">support@urbanrepairexpert.com</a>
               </p>
-              <p>
-                <strong>Email:</strong> <a href="mailto:support@yourcompany.com">support@yourcompany.com</a><br />
-                <strong>Phone:</strong> <a href="tel:+911234567890">+91 123 456 7890</a>
-              </p>
+
+              <h2 className="text-center pt-6">🤝 Our Commitment</h2>
+              <blockquote className="border-none text-center text-xl italic text-slate-700 p-4">
+                “Your data is not just information to us — it’s a responsibility. We handle it with care, sensitivity, and complete respect.”
+              </blockquote>
             </div>
           </div>
         </div>

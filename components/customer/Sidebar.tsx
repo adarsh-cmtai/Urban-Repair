@@ -1,11 +1,12 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { LayoutDashboard, Package, User, LogOut, PlusCircle } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '@/store/authSlice';
 import { RootState } from '@/store/store';
+import { toast } from 'react-hot-toast';
 
 const navigation = [
   { name: 'Dashboard', href: '/customer', icon: LayoutDashboard },
@@ -17,11 +18,13 @@ const navigation = [
 export function Sidebar() {
   const pathname = usePathname();
   const dispatch = useDispatch();
+  const router = useRouter();
   const { user } = useSelector((state: RootState) => state.auth);
 
   const handleLogout = () => {
     dispatch(logout());
-    window.location.href = '/login';
+    toast.success('You have been logged out.');
+    router.push('/login');
   };
 
   return (
