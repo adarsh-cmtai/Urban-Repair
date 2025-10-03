@@ -42,10 +42,10 @@ export function Footer() {
               <div className="w-12 h-12 bg-red-600 rounded-xl flex items-center justify-center shadow-lg shadow-red-800/50">
                 <Wrench className="w-6 h-6 text-white" />
               </div>
-              <span className="font-heading font-bold text-3xl text-white">Urban Repair</span>
+              <span className="font-heading font-bold text-3xl text-white">Urban Repair Expert</span>
             </div>
             <p className="mb-8 leading-relaxed max-w-sm text-slate-400">
-              Your trusted partner for home services. We bring expertise and reliability to your doorstep.
+              Redefining luxury-class appliance care in Hyderabad. We don't just fix machines—we build relationships.
             </p>
             <div className="flex space-x-3">
               <a href="#" className="w-10 h-10 border border-slate-700 rounded-full flex items-center justify-center text-slate-400 hover:bg-red-600 hover:text-white hover:border-red-600 transition-all transform hover:scale-110">
@@ -80,7 +80,7 @@ export function Footer() {
               <li><Link href="/about" className="text-slate-400 hover:text-red-500 hover:translate-x-1 transition-all duration-300 block">About Us</Link></li>
               <li><Link href="/blog" className="text-slate-400 hover:text-red-500 hover:translate-x-1 transition-all duration-300 block">Blog</Link></li>
               <li><Link href="/faq" className="text-slate-400 hover:text-red-500 hover:translate-x-1 transition-all duration-300 block">FAQ</Link></li>
-              <li><Link href="/careers" className="text-slate-400 hover:text-red-500 hover:translate-x-1 transition-all duration-300 block">Careers</Link></li>
+              {/* <li><Link href="/careers" className="text-slate-400 hover:text-red-500 hover:translate-x-1 transition-all duration-300 block">Careers</Link></li> */}
               <li><Link href="/contact" className="text-slate-400 hover:text-red-500 hover:translate-x-1 transition-all duration-300 block">Contact Us</Link></li>
             </ul>
           </div>
@@ -88,24 +88,24 @@ export function Footer() {
           <div>
             <h3 className="font-semibold text-lg text-white mb-6">Get In Touch</h3>
             <div className="space-y-5">
-              <a href="tel:+919876543210" className="flex items-start space-x-3 group">
+              <a href="tel:+918109279412" className="flex items-start space-x-3 group">
                 <Phone className="w-6 h-6 text-red-500 mt-1 flex-shrink-0" />
                 <div>
-                  <p className="text-white font-medium group-hover:text-red-500 transition-colors">+91 98765 43210</p>
-                  <p className="text-slate-500 text-sm">24/7 Support</p>
+                  <p className="text-white font-medium group-hover:text-red-500 transition-colors">+91 8109279412</p>
+                  <p className="text-slate-500 text-sm">Direct WhatsApp/Call</p>
                 </div>
               </a>
-              <a href="mailto:info@urbanrepair.com" className="flex items-start space-x-3 group">
+              <a href="mailto:support@urbanrepairexpert.com" className="flex items-start space-x-3 group">
                 <Mail className="w-6 h-6 text-red-500 mt-1 flex-shrink-0" />
                 <div>
-                  <p className="text-white font-medium group-hover:text-red-500 transition-colors">info@urbanrepair.com</p>
-                  <p className="text-slate-500 text-sm">General Inquiries</p>
+                  <p className="text-white font-medium group-hover:text-red-500 transition-colors break-all">support@urbanrepairexpert.com</p>
+                  <p className="text-slate-500 text-sm">Founder Monitored</p>
                 </div>
               </a>
               <div className="flex items-start space-x-3">
                 <MapPin className="w-6 h-6 text-red-500 mt-1 flex-shrink-0" />
                 <div>
-                  <p className="text-white font-medium">Hyderabad, Telangana</p>
+                  <p className="text-white font-medium">Hitech City, Hyderabad</p>
                   <p className="text-slate-500 text-sm">Serving all areas</p>
                 </div>
               </div>
@@ -115,10 +115,10 @@ export function Footer() {
 
         <div className="border-t border-slate-800 py-8">
           <div className="flex flex-col md:flex-row justify-between items-center text-sm">
-            <p className="text-slate-500 mb-4 md:mb-0">© {new Date().getFullYear()} Urban Repair. All rights reserved.</p>
+            <p className="text-slate-500 mb-4 md:mb-0">© {new Date().getFullYear()} Urban Repair Expert. All rights reserved.</p>
             <div className="flex space-x-6">
               <Link href="/privacy" className="text-slate-500 hover:text-red-500 transition-colors">Privacy Policy</Link>
-              <Link href="/terms" className="text-slate-500 hover:text-red-500 transition-colors">Terms of Service</Link>
+              <Link href="/terms" className="text-slate-500 hover:text-red-500 transition-colors">Terms & Conditions</Link>
             </div>
           </div>
         </div>

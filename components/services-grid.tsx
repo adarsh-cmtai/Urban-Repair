@@ -144,9 +144,9 @@ export function SellApplianceSection() {
                     }`}
                   >
                     <Icon className={`w-5 h-5 mr-2 transition-colors duration-300 lg:w-7 lg:h-7 lg:mr-4 flex-shrink-0 ${isActive ? 'text-white lg:text-red-600' : 'text-slate-500 group-hover:text-red-600'}`} />
-                    <div className="lg:w-full">
+                    <div className="flex-1 lg:min-w-0">
                       <h3 className="text-sm lg:font-semibold lg:text-lg lg:text-slate-800">{category.title}</h3>
-                      <p className="text-xs text-slate-500 hidden lg:block">{category.description}</p>
+                      <p className="text-xs text-slate-500 hidden lg:block truncate">{category.description}</p>
                     </div>
                   </button>
                 )
@@ -159,7 +159,7 @@ export function SellApplianceSection() {
             className="col-span-full lg:col-span-9 animate-fade-in"
           >
             <h3 className="font-heading font-bold text-3xl md:text-4xl text-slate-900 mb-8 text-center lg:text-left">
-              Services for <span className="text-red-600">{activeCategory.title.replace(' Repair', '')}</span>
+              Services for <span className="text-red-600">{activeCategory.title.replace(/ (Repair|Services)$/i, '')}</span>
             </h3>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
