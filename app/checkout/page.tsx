@@ -3,17 +3,34 @@
 import React, { useState, useEffect, useCallback, FormEvent } from 'react';
 import { CartItem } from '@/app/services/types';
 import toast, { Toaster } from 'react-hot-toast';
-import { ArrowLeft, Home, Briefcase, MapPin, CheckCircle, Plus, CreditCard, Wallet, XCircle, Loader2 } from 'lucide-react';
+import { ArrowLeft, Home, Briefcase, MapPin, CheckCircle, Plus, XCircle, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
-import { getCustomerProfile, addCustomerAddress, getCheckoutConfig, checkIsFirstBooking, placeOrder, createRazorpayOrder } from '@/services/customerService';
+import { getCustomerProfile, addCustomerAddress, placeOrder, createRazorpayOrder } from '@/services/customerService';
 
 const UrbanRepairLogo = () => (
     <div className="flex items-center gap-2">
         <div className="w-8 h-8 bg-[#A4001C] rounded-md flex items-center justify-center font-bold text-white text-xl">U</div>
         <span className="text-2xl font-bold text-gray-800">Urban Repair</span>
+    </div>
+);
+
+// CORRECTED: InputField is defined outside the component that uses it.
+const InputField = ({ label, name, value, onChange, placeholder, className = '' }: { label: string, name: string, value: string, onChange: (e: React.ChangeEvent<HTMLInputElement>) => void, placeholder?: string, className?: string }) => (
+    <div className={className}>
+        <label htmlFor={name} className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
+        <input 
+            type="text" 
+            id={name} 
+            name={name} 
+            value={value} 
+            onChange={onChange} 
+            placeholder={placeholder}
+            required 
+            className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-red-500 focus:border-transparent transition-colors"
+        />
     </div>
 );
 
@@ -23,8 +40,12 @@ const AddressSelectionModal = ({ isOpen, onClose, onSave }: any) => {
     
     if (!isOpen) return null;
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        setAddressData(prev => ({...prev, [e.target.name]: e.target.value}));
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setAddressData(prevAddressData => ({
+            ...prevAddressData,
+            [name]: value
+        }));
     };
 
     const handleSave = async (e: FormEvent) => {
@@ -37,39 +58,38 @@ const AddressSelectionModal = ({ isOpen, onClose, onSave }: any) => {
         await onSave(addressData);
         setIsLoading(false);
     };
-
-    const InputField = ({ label, name, value, onChange }: { label: string, name: string, value: string, onChange: any }) => (
-        <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
-            <input type="text" name={name} value={value} onChange={onChange} required className="w-full p-3 border border-gray-300 rounded-lg"/>
-        </div>
-    );
     
     return (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex justify-center items-center p-4">
             <div className="bg-white rounded-xl shadow-2xl w-full max-w-lg animate-in fade-in-0 zoom-in-95">
-                <div className="flex justify-between items-center p-4 border-b">
+                <div className="flex justify-between items-center p-5 border-b border-gray-200">
                     <h2 className="text-xl font-bold text-gray-800">Add New Service Address</h2>
-                    <button onClick={onClose} className="p-2 rounded-full hover:bg-gray-100"><XCircle className="w-6 h-6" /></button>
+                    <button onClick={onClose} className="p-2 rounded-full text-gray-500 hover:bg-gray-100 hover:text-gray-800 transition-colors">
+                        <XCircle className="w-6 h-6" />
+                    </button>
                 </div>
-                <form onSubmit={handleSave} className="p-6 space-y-5">
+                <form onSubmit={handleSave} className="p-6 space-y-6">
                     <div>
                         <h4 className="text-sm font-medium text-gray-700 mb-2">Address Type</h4>
-                        <div className="flex gap-2">
+                        <div className="flex flex-wrap gap-2">
                             {(['Home', 'Office', 'Other'] as const).map(type => (
-                                <button key={type} type="button" onClick={() => setAddressData({...addressData, label: type})} className={`px-4 py-2 border rounded-full flex items-center gap-2 text-sm ${addressData.label === type ? 'bg-red-600 text-white' : 'hover:bg-gray-100'}`}>
-                                    {type === 'Home' && <Home size={16} />} {type === 'Office' && <Briefcase size={16} />} {type === 'Other' && <Plus size={16} />} {type}
+                                <button key={type} type="button" onClick={() => setAddressData({...addressData, label: type})} className={`px-4 py-2 border rounded-full flex items-center gap-2 text-sm transition-colors ${addressData.label === type ? 'bg-red-600 text-white border-red-600' : 'hover:bg-gray-100 border-gray-300'}`}>
+                                    {type === 'Home' && <Home size={16} />} {type === 'Office' && <Briefcase size={16} />} {type === 'Other' && <MapPin size={16} />} {type}
                                 </button>
                             ))}
                         </div>
                     </div>
-                    <InputField label="Street Address, Colony" name="street" value={addressData.street} onChange={handleChange} />
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                        <InputField label="Town/City" name="city" value={addressData.city} onChange={handleChange} />
-                        <InputField label="State" name="state" value={addressData.state} onChange={handleChange} />
-                        <InputField label="Pincode" name="zipCode" value={addressData.zipCode} onChange={handleChange} />
+                    
+                    <div className="space-y-4">
+                        <InputField label="Street Address, Colony" name="street" value={addressData.street} onChange={handleChange} placeholder="e.g. 123, Sunshine Apartments" />
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <InputField label="Town / City" name="city" value={addressData.city} onChange={handleChange} placeholder="e.g. Mumbai"/>
+                            <InputField label="State" name="state" value={addressData.state} onChange={handleChange} placeholder="e.g. Maharashtra"/>
+                        </div>
+                        <InputField label="Pincode" name="zipCode" value={addressData.zipCode} onChange={handleChange} placeholder="e.g. 400001"/>
                     </div>
-                    <button type="submit" disabled={isLoading} className="w-full bg-red-600 text-white font-bold py-3 rounded-lg flex justify-center items-center text-lg mt-2">
+
+                    <button type="submit" disabled={isLoading} className="w-full bg-red-600 text-white font-bold py-3 rounded-lg flex justify-center items-center text-lg mt-2 hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
                         {isLoading ? <Loader2 className="animate-spin"/> : 'Save & Use This Address' }
                     </button>
                 </form>
@@ -106,7 +126,7 @@ const CartSummary = ({ cart, onQuantityChange, onProceed, isLoading }: any) => {
                 <div className="flex justify-between font-bold text-lg border-t pt-2 mt-2"><span>To Pay</span><span>₹{finalTotal.toLocaleString('en-IN')}</span></div>
             </div>
             <div className="p-4">
-                <button onClick={onProceed} disabled={isLoading} className="w-full bg-[#A4001C] text-white font-bold py-3 rounded-lg flex justify-center items-center">
+                <button onClick={onProceed} disabled={isLoading} className="w-full bg-[#A4001C] text-white font-bold py-3 rounded-lg flex justify-center items-center disabled:opacity-60">
                     {isLoading ? <Loader2 className="animate-spin" /> : 'Place Order'}
                 </button>
             </div>
@@ -176,7 +196,7 @@ export default function CheckoutPage() {
             router.push('/services');
         }
         if (token) fetchCheckoutData();
-    }, [token, router]);
+    }, [token, router, fetchCheckoutData]);
     
     const handleSaveAddressAndProceed = async (newAddressData: any) => {
         try {
@@ -195,7 +215,7 @@ export default function CheckoutPage() {
     
     const handleQuantityChange = (subServiceId: string, delta: number) => {
         const newCart = cart.map(item =>
-            item.subService._id === subServiceId ? { ...item, quantity: item.quantity + delta } : item
+            item.subService._id === subServiceId ? { ...item, quantity: (item.quantity || 1) + delta } : item
         ).filter(item => item.quantity > 0);
         setCart(newCart);
         localStorage.setItem('cart', JSON.stringify(newCart));
@@ -208,7 +228,7 @@ export default function CheckoutPage() {
         }
         setBookingStatus('loading');
 
-        const subtotal = cart.reduce((total, item) => total + item.price * item.quantity, 0);
+        const subtotal = cart.reduce((total, item) => total + (item.price || 0) * (item.quantity || 1), 0);
         const finalTotal = subtotal;
 
         const orderData = {
@@ -231,7 +251,7 @@ export default function CheckoutPage() {
                 toast.error('Booking failed. Please try again.');
                 setBookingStatus('error');
             }
-        } else { // Online Payment
+        } else {
             try {
                 const razorpayOrderRes = await createRazorpayOrder(finalTotal, token!);
                 const { order } = razorpayOrderRes;
@@ -289,26 +309,33 @@ export default function CheckoutPage() {
             <div className="bg-gray-50 min-h-screen">
                 <div className="max-w-7xl mx-auto px-4 py-8">
                     <header className="mb-8"><UrbanRepairLogo /></header>
-                    {isLoading ? <div className="flex justify-center items-center h-64"><Loader2 className="w-10 h-10 animate-spin text-brand-red"/></div> : (
+                    {isLoading ? <div className="flex justify-center items-center h-64"><Loader2 className="w-10 h-10 animate-spin text-red-600"/></div> : (
                     <main className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
                         <div className="lg:col-span-2 space-y-6">
                             <div className="bg-white p-6 rounded-xl shadow-sm border">
-                                <h3 className="text-xl font-bold mb-4">1. Select Delivery Address</h3>
+                                <h3 className="text-xl font-bold mb-4">1. Select Service Address</h3>
                                 {addresses.map(addr => (
-                                    <label key={addr._id} className={`flex items-start p-4 border-2 rounded-lg cursor-pointer mb-4 ${selectedAddress?._id === addr._id ? 'border-red-500 bg-red-50' : 'border-gray-200'}`}>
-                                        <input type="radio" name="address" checked={selectedAddress?._id === addr._id} onChange={() => setSelectedAddress(addr)} className="mt-1 h-4 w-4 text-red-600" />
+                                    <label key={addr._id} className={`flex items-start p-4 border-2 rounded-lg cursor-pointer mb-4 transition-colors ${selectedAddress?._id === addr._id ? 'border-red-500 bg-red-50' : 'border-gray-200 hover:border-gray-300'}`}>
+                                        <input type="radio" name="address" checked={selectedAddress?._id === addr._id} onChange={() => setSelectedAddress(addr)} className="mt-1 h-4 w-4 text-red-600 border-gray-300 focus:ring-red-500" />
                                         <div className="ml-4">
-                                            <div className="font-semibold">{addr.label}</div>
-                                            <p className="text-gray-600 text-sm">{`${addr.street}, ${addr.city}, ${addr.state} - ${addr.zipCode}`}</p>
+                                            <div className="font-semibold flex items-center gap-2">
+                                                {addr.label === 'Home' && <Home size={16} className="text-gray-600"/>}
+                                                {addr.label === 'Office' && <Briefcase size={16} className="text-gray-600"/>}
+                                                {addr.label === 'Other' && <MapPin size={16} className="text-gray-600"/>}
+                                                {addr.label}
+                                            </div>
+                                            <p className="text-gray-600 text-sm mt-1">{`${addr.street}, ${addr.city}, ${addr.state} - ${addr.zipCode}`}</p>
                                         </div>
                                     </label>
                                 ))}
-                                <button onClick={() => setAddressModalOpen(true)} className="mt-2 text-red-600 font-semibold text-sm hover:underline">+ Add New Address</button>
+                                <button onClick={() => setAddressModalOpen(true)} className="mt-2 text-red-600 font-semibold text-sm hover:underline flex items-center gap-1">
+                                    <Plus size={16} /> Add New Address
+                                </button>
                             </div>
                             <div className="bg-white p-6 rounded-xl shadow-sm border">
                                 <h3 className="text-xl font-bold mb-4">2. Choose Payment Method</h3>
-                                 <select value={paymentMethod} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setPaymentMethod(e.target.value as any)} className="w-full p-3 border border-gray-300 rounded-lg">
-                                    <option value="Online">Pay Online</option>
+                                 <select value={paymentMethod} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setPaymentMethod(e.target.value as any)} className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-red-500 focus:border-transparent">
+                                    <option value="Online">Pay Online (Cards, UPI, Wallets)</option>
                                     <option value="COD">Cash on Delivery</option>
                                 </select>
                             </div>
