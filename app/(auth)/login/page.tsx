@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/store/store';
 import { loginUser, clearError } from '@/store/authSlice';
 import { toast } from 'react-hot-toast';
-import { LogIn, Loader2 } from 'lucide-react';
+import { LogIn, Loader2, Home } from 'lucide-react';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -52,6 +52,14 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen w-full lg:grid lg:grid-cols-2">
+
+      <Link 
+        href="/" 
+        className="absolute top-6 left-6 z-20 inline-flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-sm border border-slate-200 rounded-full text-sm font-semibold text-slate-700 hover:bg-white transition-colors"
+      >
+        <Home className="w-4 h-4" />
+        <span>Back to Home</span>
+      </Link>
       <div className="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div className="w-full max-w-md space-y-8">
           <div>

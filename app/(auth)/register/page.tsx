@@ -7,7 +7,7 @@ import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/store/store';
 import { registerUser } from '@/store/authSlice';
 import { toast } from 'react-hot-toast';
-import { UserPlus, Loader2 } from 'lucide-react';
+import { UserPlus, Loader2, Home } from 'lucide-react';
 
 type Role = 'customer' | 'admin' | 'technician';
 
@@ -67,6 +67,13 @@ export default function RegisterPage() {
         />
       </div>
       <div className="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <Link 
+        href="/" 
+        className="absolute top-6 right-6 z-20 inline-flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-sm border border-slate-200 rounded-full text-sm font-semibold text-slate-700 hover:bg-white transition-colors"
+      >
+        <Home className="w-4 h-4" />
+        <span>Back to Home</span>
+      </Link>
         <div className="w-full max-w-md space-y-8">
           <div>
             <h2 className="mt-6 text-center text-3xl font-montserrat font-extrabold text-neutral-800">
