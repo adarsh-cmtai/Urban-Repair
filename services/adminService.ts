@@ -168,3 +168,15 @@ export const updateTestimonial = async (id: string, data: any, token: string) =>
 export const deleteTestimonial = async (id: string, token: string) => {
     return api.delete(`/admin/testimonials/${id}`, { headers: { Authorization: `Bearer ${token}` } });
 };
+
+export const deleteCategory = async (id: string, token: string) => {
+    return api.delete(`/admin/catalog/categories/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+};
+
+export const deleteService = async (id: string, token: string) => {
+    return api.delete(`/admin/catalog/services/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+};
+
+export const deleteSubService = async (id: string, token: string) => {
+    return api.delete(`/admin/catalog/sub-services/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+};

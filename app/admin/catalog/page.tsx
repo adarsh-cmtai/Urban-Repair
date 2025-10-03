@@ -4,12 +4,12 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import {
-    getAdminCategories, createCategory, updateCategory,
-    getAdminServices, createService, updateService,
-    getAdminSubServices, createSubService, updateSubService
+    getAdminCategories, createCategory, updateCategory, deleteCategory,
+    getAdminServices, createService, updateService, deleteService,
+    getAdminSubServices, createSubService, updateSubService, deleteSubService,
 } from '@/services/adminService';
 import { CatalogFormModal } from '@/components/admin/catalog/CatalogFormModal';
-import { Loader2, Plus, Edit, ChevronRight } from 'lucide-react';
+import { Loader2, Plus, Edit, ChevronRight, Trash2 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
 interface CatalogItem {
@@ -17,9 +17,10 @@ interface CatalogItem {
     name: string;
     imageUrl: string;
     type?: string;
+    isActive?: boolean;
 }
 
-type ModalItemType = 'Category' | 'Service' | 'Sub-Service';
+type ModalItemType = 'Category' | 'Service' | 'SubService';
 
 interface ModalState {
     isOpen: boolean;
@@ -56,9 +57,8 @@ export default function ServiceCatalogPage() {
     useEffect(() => {
         if (selectedCategory && token) {
             setIsLoading(prev => ({ ...prev, services: true }));
-            getAdminServices(selectedCategory._id, token).then(res => {
-                setServices(res.data);
-            }).finally(() => setIsLoading(prev => ({ ...prev, services: false })));
+            getAdminServices(selectedCategory._id, token).then(res => setServices(res.data))
+                .finally(() => setIsLoading(prev => ({ ...prev, services: false })));
         } else {
             setServices([]);
         }
@@ -68,9 +68,8 @@ export default function ServiceCatalogPage() {
     useEffect(() => {
         if (selectedService && token) {
             setIsLoading(prev => ({ ...prev, subServices: true }));
-            getAdminSubServices(selectedService._id, token).then(res => {
-                setSubServices(res.data);
-            }).finally(() => setIsLoading(prev => ({ ...prev, subServices: false })));
+            getAdminSubServices(selectedService._id, token).then(res => setSubServices(res.data))
+                .finally(() => setIsLoading(prev => ({ ...prev, subServices: false })));
         } else {
             setSubServices([]);
         }
@@ -101,10 +100,38 @@ export default function ServiceCatalogPage() {
         }).then(() => {
             if (itemType === 'Category') fetchCategories();
             if (itemType === 'Service' && selectedCategory) getAdminServices(selectedCategory._id, token!).then(res => setServices(res.data));
-            if (itemType === 'Sub-Service' && selectedService) getAdminSubServices(selectedService._id, token!).then(res => setSubServices(res.data));
+            if (itemType === 'SubService' && selectedService) getAdminSubServices(selectedService._id, token!).then(res => setSubServices(res.data));
         });
 
         setModalState({ isOpen: false, itemType: 'Category', initialData: null, additionalData: null });
+    };
+    
+    const handleDelete = async (itemType: ModalItemType, item: CatalogItem) => {
+        const actionText = (itemType === 'Category' || itemType === 'Service') ? 'deactivate' : 'delete';
+        if (!window.confirm(`Are you sure you want to ${actionText} "${item.name}"? This action cannot be undone.`)) return;
+
+        let promise;
+        if (itemType === 'Category') promise = deleteCategory(item._id, token!);
+        else if (itemType === 'Service') promise = deleteService(item._id, token!);
+        else promise = deleteSubService(item._id, token!);
+
+        toast.promise(promise, {
+            loading: `${actionText.charAt(0).toUpperCase() + actionText.slice(1)}ing...`,
+            success: `${itemType} ${actionText}d successfully!`,
+            error: `Failed to ${actionText} ${itemType}.`
+        }).then(() => {
+            if (itemType === 'Category') {
+                fetchCategories();
+                setSelectedCategory(null);
+            } else if (itemType === 'Service') {
+                if (selectedCategory) {
+                    getAdminServices(selectedCategory._id, token!).then(res => setServices(res.data));
+                }
+                setSelectedService(null);
+            } else if (itemType === 'SubService' && selectedService) {
+                getAdminSubServices(selectedService._id, token!).then(res => setSubServices(res.data));
+            }
+        });
     };
 
     const renderColumn = (title: string, items: CatalogItem[], isLoading: boolean, onAdd: () => void, onSelect: (item: CatalogItem) => void, selectedItem: CatalogItem | null, itemType: ModalItemType, addDisabled: boolean = false) => (
@@ -116,17 +143,18 @@ export default function ServiceCatalogPage() {
             {isLoading ? <div className="flex justify-center p-4"><Loader2 className="animate-spin text-brand-red"/></div> : (
                 <ul className="space-y-2">
                     {items.map(item => (
-                        <li key={item._id} onClick={() => onSelect(item)} className={`flex items-center justify-between p-3 rounded-md cursor-pointer ${selectedItem?._id === item._id ? 'bg-red-100' : 'hover:bg-slate-50'}`}>
+                        <li key={item._id} onClick={() => onSelect(item)} className={`flex items-center justify-between p-3 rounded-md cursor-pointer ${selectedItem?._id === item._id ? 'bg-red-100' : 'hover:bg-slate-50'} ${!item.isActive && 'opacity-50'}`}>
                             <div className="flex items-center gap-3">
                                 <img src={item.imageUrl} alt={item.name} className="w-10 h-10 object-cover rounded-md"/>
                                 <div>
                                     <p className="font-semibold text-sm">{item.name}</p>
-                                    {item.type && <p className="text-xs text-gray-500">{item.type}</p>}
+                                    {!item.isActive && <span className="text-xs text-red-600 font-bold">Inactive</span>}
                                 </div>
                             </div>
                             <div className="flex items-center">
+                                <button onClick={(e) => { e.stopPropagation(); handleDelete(itemType, item); }} className="p-1 text-gray-400 hover:text-red-600"><Trash2 className="w-4 h-4"/></button>
                                 <button onClick={(e) => { e.stopPropagation(); handleOpenModal(itemType, item, { categoryId: selectedCategory?._id, serviceId: selectedService?._id }); }} className="p-1 text-gray-400 hover:text-blue-600"><Edit className="w-4 h-4"/></button>
-                                {itemType !== 'Sub-Service' && <ChevronRight className={`w-5 h-5 ${selectedItem?._id === item._id ? 'text-brand-red' : 'text-gray-300'}`}/>}
+                                {itemType !== 'SubService' && <ChevronRight className={`w-5 h-5 ${selectedItem?._id === item._id ? 'text-brand-red' : 'text-gray-300'}`}/>}
                             </div>
                         </li>
                     ))}
@@ -141,7 +169,7 @@ export default function ServiceCatalogPage() {
             <div className="flex flex-col lg:flex-row gap-6">
                 {renderColumn('Categories', categories, isLoading.categories, () => handleOpenModal('Category'), setSelectedCategory, selectedCategory, 'Category')}
                 {renderColumn(`Services ${selectedCategory ? `in ${selectedCategory.name}`: ''}`, services, isLoading.services, () => handleOpenModal('Service', null, { categoryId: selectedCategory?._id }), setSelectedService, selectedService, 'Service', !selectedCategory)}
-                {renderColumn(`Sub-Services ${selectedService ? `for ${selectedService.name}`: ''}`, subServices, isLoading.subServices, () => handleOpenModal('Sub-Service', null, { serviceId: selectedService?._id }), () => {}, null, 'Sub-Service', !selectedService)}
+                {renderColumn(`Sub-Services ${selectedService ? `for ${selectedService.name}`: ''}`, subServices, isLoading.subServices, () => handleOpenModal('SubService', null, { serviceId: selectedService?._id }), () => {}, null, 'SubService', !selectedService)}
             </div>
 
             <CatalogFormModal
