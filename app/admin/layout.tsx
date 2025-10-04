@@ -40,7 +40,7 @@ export default function AdminDashboardLayout({
       
       <MobileSidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
 
-      <div className="lg:pl-72">
+      <div className="lg:pl-65">
         <DashboardHeader onMenuClick={() => setSidebarOpen(true)} />
         <main className="py-10">
           <div className="px-4 sm:px-6 lg:px-8">

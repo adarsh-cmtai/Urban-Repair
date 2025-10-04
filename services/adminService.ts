@@ -155,6 +155,11 @@ export const getAdminBookingById = async (id: string, token: string) => {
     return data;
 };
 
+export const deleteTechnician = async (id: string, token: string) => {
+    const { data } = await api.delete(`/admin/technicians/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+    return data;
+};
+
 export const createTestimonial = async (data: any, token: string) => {
     return api.post('/admin/testimonials', data, { headers: { Authorization: `Bearer ${token}` } });
 };

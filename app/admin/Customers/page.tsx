@@ -6,8 +6,42 @@ import { RootState } from '@/store/store';
 import { getAdminCustomers, deleteCustomer } from '@/services/adminService';
 import { CustomerListItem } from '@/components/admin/customers/CustomerListItem';
 import { CustomerFormModal } from '@/components/admin/customers/CustomerFormModal';
-import { Loader2, Plus, Search } from 'lucide-react';
+import { Loader2, Plus, Search, Users, Inbox } from 'lucide-react';
 import { toast } from 'react-hot-toast';
+
+// Skeleton Loader for a better UX
+function CustomerListSkeleton() {
+    return (
+        <div className="space-y-3">
+            {[...Array(5)].map((_, i) => (
+                <div key={i} className="animate-pulse flex items-center justify-between p-4 bg-slate-50 rounded-lg">
+                    <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 bg-slate-200 rounded-full"></div>
+                        <div className="space-y-1.5">
+                            <div className="h-5 w-32 bg-slate-200 rounded"></div>
+                            <div className="h-4 w-48 bg-slate-200 rounded"></div>
+                        </div>
+                    </div>
+                    <div className="flex gap-2">
+                        <div className="h-8 w-20 bg-slate-300 rounded-md"></div>
+                        <div className="h-8 w-20 bg-slate-300 rounded-md"></div>
+                    </div>
+                </div>
+            ))}
+        </div>
+    );
+}
+
+// Empty State Component
+function EmptyState() {
+    return (
+        <div className="text-center py-16 px-6">
+            <Users className="mx-auto h-16 w-16 text-slate-300" />
+            <h3 className="mt-4 text-lg font-semibold text-slate-700">No Customers Found</h3>
+            <p className="mt-1 text-sm text-slate-500">Try adjusting your search or add a new customer.</p>
+        </div>
+    );
+}
 
 export default function AdminCustomersPage() {
     const [customers, setCustomers] = useState([]);
@@ -55,12 +89,12 @@ export default function AdminCustomersPage() {
     };
 
     const handleDelete = async (customer: any) => {
-        if (window.confirm(`Are you sure you want to deactivate ${customer.name}?`)) {
+        if (window.confirm(`Are you sure you want to delete customer "${customer.name}"?`)) {
             const promise = deleteCustomer(customer._id, token!);
             toast.promise(promise, {
-                loading: 'Deactivating customer...',
-                success: 'Customer deactivated successfully!',
-                error: 'Failed to deactivate customer.'
+                loading: 'Deleting customer...',
+                success: 'Customer deleted successfully!',
+                error: 'Failed to delete customer.'
             }).then(() => fetchCustomers());
         }
     };
@@ -72,35 +106,49 @@ export default function AdminCustomersPage() {
 
     return (
         <div className="space-y-8">
-            <div className="sm:flex sm:justify-between sm:items-center">
-                <h1 className="font-montserrat text-3xl font-bold text-neutral-800">Manage Customers</h1>
-                <div className="mt-4 sm:mt-0 flex gap-4">
-                    <div className="relative">
-                        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                            <Search className="h-5 w-5 text-gray-400" />
-                        </div>
-                        <input
-                            type="text"
-                            placeholder="Search customers..."
-                            onChange={handleSearch}
-                            className="block w-full rounded-md border-gray-300 pl-10 sm:text-sm"
-                        />
-                    </div>
-                    <button onClick={handleAddNew} className="inline-flex items-center gap-2 rounded-lg bg-brand-red px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-red-700">
-                        <Plus className="w-5 h-5" /> Add New
-                    </button>
+            <div>
+                <h1 className="font-heading text-4xl font-extrabold text-slate-800">Manage Customers</h1>
+                <p className="mt-2 text-slate-500">View, search, and manage all registered customers.</p>
+            </div>
+
+            <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
+                <div className="relative flex-1">
+                    <Search className="h-5 w-5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                    <input
+                        type="text"
+                        placeholder="Search by name, email, or phone..."
+                        onChange={handleSearch}
+                        className="pl-10 w-full h-12 text-base bg-white rounded-lg border border-slate-300 focus:ring-red-500 focus:border-red-500"
+                    />
                 </div>
+                <button 
+                    onClick={handleAddNew} 
+                    className="inline-flex items-center justify-center gap-2 rounded-lg bg-red-600 px-5 py-3 h-12 text-sm font-semibold text-white shadow-sm hover:bg-red-700 transition-colors"
+                >
+                    <Plus className="w-5 h-5" /> Add New Customer
+                </button>
             </div>
             
-            {isLoading ? (
-                 <div className="flex items-center justify-center h-64"><Loader2 className="w-8 h-8 text-brand-red animate-spin" /></div>
-            ) : (
-                <ul role="list" className="space-y-4">
-                    {filteredCustomers.map((customer: any) => (
-                        <CustomerListItem key={customer._id} customer={customer} onEdit={handleEdit} onDelete={handleDelete} />
-                    ))}
-                </ul>
-            )}
+            <div className="bg-white rounded-xl shadow-sm border border-slate-200">
+                <div className="p-4 border-b border-slate-200">
+                    <h3 className="font-heading text-xl font-bold text-slate-800">
+                        All Customers ({filteredCustomers.length})
+                    </h3>
+                </div>
+                {isLoading ? (
+                    <div className="p-4">
+                        <CustomerListSkeleton />
+                    </div>
+                ) : filteredCustomers.length > 0 ? (
+                    <ul role="list" className="divide-y divide-slate-200">
+                        {filteredCustomers.map((customer: any) => (
+                            <CustomerListItem key={customer._id} customer={customer} onEdit={handleEdit} onDelete={handleDelete} />
+                        ))}
+                    </ul>
+                ) : (
+                    <EmptyState />
+                )}
+            </div>
             
             <CustomerFormModal 
                 isOpen={isModalOpen}
