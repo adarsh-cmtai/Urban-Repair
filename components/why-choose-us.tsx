@@ -6,12 +6,12 @@ const features = [
   {
     icon: ShieldCheck,
     title: "Verified & Trained Experts",
-    description: "Our technicians are certified professionals with years of experience and ongoing training to handle any issue.",
+    description: "Our technicians are certified professionals with years of experience and ongoing training.",
   },
   {
     icon: Receipt,
     title: "Transparent Pricing",
-    description: "No hidden costs or surprise charges. You get a clear, upfront estimate before any work begins.",
+    description: "No hidden costs. You get a clear, upfront estimate before any work begins.",
   },
   {
     icon: Clock,
@@ -21,7 +21,7 @@ const features = [
   {
     icon: Users,
     title: "Customer-First Approach",
-    description: "Your satisfaction is our top priority. We're not happy until you're 100% satisfied with our service.",
+    description: "Your satisfaction is our top priority. We're not happy until you're 100% satisfied.",
   },
 ]
 
@@ -35,52 +35,60 @@ export function WhyChooseUs() {
   `;
 
   return (
-    <section className="py-12 bg-white">
+    <section className="py-24 bg-gradient-to-b from-white to-slate-50">
       <style>{animationStyles}</style>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           
-          <div className="animate-fade-in-up" style={{ animationFillMode: 'backwards' }}>
-            <div className="relative aspect-w-4 aspect-h-5">
-              <img
-                src="/choose us.jpg"
-                alt="Friendly technician providing excellent service"
-                className="w-full h-full object-cover rounded-2xl shadow-xl"
-              />
-            </div>
-          </div>
-
-          <div className="animate-fade-in-up" style={{ animationDelay: '200ms', animationFillMode: 'backwards' }}>
-            <div className="mb-8">
-              <h2 className="font-heading font-bold text-3xl md:text-4xl text-gray-900 mb-4 text-balance">
+          <div className="animate-fade-in-up order-2 lg:order-1" style={{ animationDelay: '200ms', animationFillMode: 'backwards' }}>
+            <div className="mb-10">
+              <h2 className="font-heading font-extrabold text-4xl sm:text-5xl text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-slate-800 mb-6 text-balance">
                 The Urban Repair Advantage
               </h2>
-              <p className="text-lg text-gray-600 max-w-2xl text-pretty">
+              <p className="text-lg text-slate-600 max-w-2xl text-pretty">
                 We've built our reputation on trust, quality, and an exceptional service that goes beyond just fixing things.
               </p>
-              <div className="mt-4 h-1 w-20 bg-red-600 rounded-full"></div>
             </div>
 
-            <div className="space-y-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {features.map((feature, index) => {
                 const Icon = feature.icon
                 return (
                   <div 
                     key={index} 
-                    className="group flex items-start space-x-4 p-4 rounded-xl transition-colors duration-300 hover:bg-slate-50"
+                    className="animate-fade-in-up bg-gradient-to-br from-white to-slate-50/50 p-6 rounded-2xl shadow-xl shadow-slate-300/40 border border-white transition-all duration-300 hover:shadow-2xl hover:shadow-red-500/10 hover:-translate-y-2 hover:ring-2 hover:ring-red-500/20"
+                    style={{ animationDelay: `${300 + index * 100}ms`, animationFillMode: 'backwards' }}
                   >
-                    <div className="flex-shrink-0 w-16 h-16 flex items-center justify-center bg-slate-100 rounded-full transition-all duration-300 group-hover:bg-red-100 group-hover:scale-110">
-                      <Icon className="w-8 h-8 text-gray-500 transition-colors duration-300 group-hover:text-red-600" />
+                    <div className="flex items-center justify-center w-14 h-14 mb-5 rounded-full bg-gradient-to-br from-red-600 to-red-700 shadow-lg shadow-red-500/40">
+                      <Icon className="w-7 h-7 text-white" />
                     </div>
                     <div>
-                      <h3 className="font-heading font-semibold text-xl text-gray-900 mb-1">{feature.title}</h3>
-                      <p className="text-gray-600 leading-relaxed">{feature.description}</p>
+                      <h3 className="font-heading font-bold text-lg text-slate-800 mb-2">{feature.title}</h3>
+                      <p className="text-sm text-slate-600 leading-relaxed">{feature.description}</p>
                     </div>
                   </div>
                 )
               })}
             </div>
           </div>
+          
+          <div className="relative animate-fade-in-up order-1 lg:order-2" style={{ animationFillMode: 'backwards' }}>
+            <div className="relative aspect-[4/5] max-w-md mx-auto">
+                <img
+                    src="/why-choose-us.jpg"
+                    alt="Friendly technician providing excellent service"
+                    className="w-full h-full object-cover rounded-2xl shadow-2xl shadow-slate-400/40"
+                />
+                <div className="absolute -bottom-8 -left-8 w-48 h-48">
+                    <img
+                        src="/why-choose-us.jpg"
+                        alt="Close-up of a repair"
+                        className="w-full h-full object-cover rounded-2xl shadow-2xl shadow-slate-400/60 border-4 border-white"
+                    />
+                </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </section>

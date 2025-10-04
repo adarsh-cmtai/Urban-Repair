@@ -131,9 +131,78 @@ function ContactInfo() {
 }
 
 // Component 3: ContactForm (Standard, no content change needed)
-function ContactForm() {
-  const [formData, setFormData] = useState({ name: "", phone: "", email: "", service: "", message: "" });
+interface FormDataState {
+  name: string;
+  phone: string;
+  email: string;
+  service: string;
+  message: string;
+}
+
+export function ContactForm() {
+  const [formData, setFormData] = useState<FormDataState>({
+    name: "",
+    phone: "",
+    email: "",
+    service: "",
+    message: ""
+  });
+  
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [resultMessage, setResultMessage] = useState("");
+
   const services = ["Appliance Repair", "Sell Old Appliances", "Interior Design", "General Inquiry"];
+
+  // 'e' parameter ko sahi type diya gaya hai
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { id, value } = e.target;
+    setFormData({ ...formData, [id]: value });
+  };
+
+  // 'value' parameter ko sahi type diya gaya hai
+  const handleSelectChange = (value: string) => {
+    setFormData({ ...formData, service: value });
+  };
+  
+  // 'e' parameter ko form submission ke liye sahi type diya gaya hai
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setResultMessage("");
+
+    const dataToSend = {
+      ...formData,
+      access_key: "5acc18f5-9498-4dfb-87bb-c8c85793258f", 
+      subject: `New Contact Form Submission from ${formData.name}`,
+      from_name: "Urban Repair Expert"
+    };
+
+    try {
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(dataToSend),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        setResultMessage("✅ Message sent successfully! We will get back to you soon.");
+        setFormData({ name: "", phone: "", email: "", service: "", message: "" });
+      } else {
+        console.error("Submission Error:", result);
+        setResultMessage(`❌ Error: ${result.message}`);
+      }
+    } catch (error) {
+      console.error("Fetch Error:", error);
+      setResultMessage("❌ An unexpected error occurred. Please try again later.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
 
   return (
     <section className="py-2 bg-gradient-to-b from-white to-slate-50">
@@ -143,25 +212,25 @@ function ContactForm() {
             <h2 className="font-heading font-extrabold text-4xl text-slate-900 mb-4">Send a Direct Message</h2>
             <p className="text-lg text-slate-600">Your message will be personally reviewed by our team.</p>
           </div>
-          <form className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <Label htmlFor="name" className="text-base font-semibold text-slate-700">Full Name *</Label>
-                <Input id="name" placeholder="Your full name" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="h-12 text-base" />
+                <Input required id="name" placeholder="Your full name" value={formData.name} onChange={handleInputChange} className="h-12 text-base" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="phone" className="text-base font-semibold text-slate-700">Phone / WhatsApp *</Label>
-                <Input id="phone" placeholder="+91 8109279412" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} className="h-12 text-base" />
+                <Input required id="phone" placeholder="+91 8109279412" value={formData.phone} onChange={handleInputChange} className="h-12 text-base" />
               </div>
             </div>
             <div className="grid md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <Label htmlFor="email" className="text-base font-semibold text-slate-700">Email Address *</Label>
-                <Input id="email" type="email" placeholder="your.email@example.com" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className="h-12 text-base" />
+                <Input required id="email" type="email" placeholder="your.email@example.com" value={formData.email} onChange={handleInputChange} className="h-12 text-base" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="service" className="text-base font-semibold text-slate-700">Service Needed *</Label>
-                <Select value={formData.service} onValueChange={(value) => setFormData({ ...formData, service: value })}>
+                <Select required value={formData.service} onValueChange={handleSelectChange}>
                   <SelectTrigger className="h-12 text-base"><SelectValue placeholder="Select a service" /></SelectTrigger>
                   <SelectContent>{services.map((s) => <SelectItem key={s} value={s} className="text-base">{s}</SelectItem>)}</SelectContent>
                 </Select>
@@ -169,13 +238,31 @@ function ContactForm() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="message" className="text-base font-semibold text-slate-700">Message *</Label>
-              <Textarea id="message" placeholder="Please describe your requirements..." rows={5} value={formData.message} onChange={(e) => setFormData({ ...formData, message: e.target.value })} className="text-base" />
+              <Textarea required id="message" placeholder="Please describe your requirements..." rows={5} value={formData.message} onChange={handleInputChange} className="text-base" />
             </div>
             <div className="pt-6">
-              <Button size="lg" className="w-full bg-red-600 hover:bg-red-700 text-lg font-semibold h-14 rounded-xl">
-                <Send className="mr-3 h-5 w-5" />Send Message
+              <Button type="submit" size="lg" disabled={isSubmitting} className="w-full bg-red-600 hover:bg-red-700 text-lg font-semibold h-14 rounded-xl disabled:bg-red-400 disabled:cursor-not-allowed">
+                {isSubmitting ? (
+                  <>
+                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Sending...
+                  </>
+                ) : (
+                  <>
+                    <Send className="mr-3 h-5 w-5" />
+                    Send Message
+                  </>
+                )}
               </Button>
             </div>
+            {resultMessage && (
+              <p className={`text-center mt-4 text-lg ${resultMessage.startsWith('✅') ? 'text-green-600' : 'text-red-600'}`}>
+                {resultMessage}
+              </p>
+            )}
           </form>
         </div>
       </div>

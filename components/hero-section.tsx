@@ -86,7 +86,7 @@ export function HeroSection() {
           style={{ animationDelay: '0.3s', animationFillMode: 'backwards' }}
         >
           <img
-            src="/professional-home-technician-repairing-appliances-.jpg"
+            src="/house-partner.jpg"
             alt="Professional home service technician"
             className="w-full h-full object-cover animate-ken-burns"
           />

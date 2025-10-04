@@ -90,8 +90,8 @@ export function ServiceAreaMap() {
               )}
             </div>
           </div>
-          <div className="relative p-4 bg-slate-900 rounded-3xl shadow-2xl">
-              <img src="/hyderabad-city-map-with-service-areas-highlighted.jpg" alt="Map" className="w-full h-full object-cover rounded-xl"/>
+          <div className="relative p-4 bg-white rounded-3xl shadow-lg">
+              <img src="/Map.webp" alt="Map" className="w-full h-full object-cover rounded-xl"/>
           </div>
         </div>
       </div>

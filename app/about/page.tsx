@@ -66,9 +66,9 @@ function AboutHero() {
 
           <div className="relative order-1 lg:order-2">
             <img
-              src="/about-us-team-photo-home-services.jpg"
+              src="/about-1.png"
               alt="Our professional team"
-              className="rounded-3xl shadow-2xl shadow-slate-300/60 aspect-[4/3] object-cover"
+              className="rounded-3xl shadow-2xl shadow-slate-300/60 aspect-[4/3] object-contain w-full"
             />
             <div className="absolute bottom-6 left-6 bg-white/70 backdrop-blur-sm text-slate-800 p-5 rounded-2xl shadow-xl border border-white/50">
               <div className="text-red-600 text-3xl font-bold">Since 2008</div>
@@ -171,7 +171,7 @@ function CompanyStory() {
               </ul>
             </div>
             <div className="relative h-full w-full min-h-[300px]">
-              <img src="/our-mission-home-transformation.jpg" alt="Home transformation reflecting our mission" className="relative rounded-2xl shadow-lg w-full h-full object-cover" />
+              <img src="/about-2.jpg" alt="Home transformation reflecting our mission" className="relative rounded-2xl shadow-lg w-full h-full object-cover" />
             </div>
           </div>
         </div>
