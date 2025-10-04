@@ -120,7 +120,7 @@ function CompanyStory() {
                     <Icon className="h-6 w-6" />
                   </div>
                   <div className="bg-white p-6 rounded-2xl shadow-xl shadow-slate-300/40 border border-slate-200/80 transition-all duration-300 hover:shadow-2xl hover:shadow-red-500/10 hover:-translate-y-1">
-                    <h3 className="font-heading font-bold text-xl text-slate-900 mb-2">{milestone.title} - <span className="text-red-600">{milestone.year}</span></h3>
+                    <h3 className="font-heading font-bold text-xl text-slate-900 mb-2">{milestone.title}</h3>
                     <p className="text-slate-600 text-pretty">{milestone.description}</p>
                   </div>
                 </div>
