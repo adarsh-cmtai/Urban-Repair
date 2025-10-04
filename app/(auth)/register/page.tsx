@@ -117,7 +117,7 @@ export default function RegisterPage() {
                   <Loader2 className="h-5 w-5 animate-spin" />
                 ) : (
                   <>
-                    <span className="absolute left-0 inset-y-0 flex items-center pl-3">
+                    <span className="absolute left-32 inset-y-0 flex items-center pl-3">
                       <UserPlus className="h-5 w-5 text-red-300 group-hover:text-red-200" />
                     </span>
                     Create Account

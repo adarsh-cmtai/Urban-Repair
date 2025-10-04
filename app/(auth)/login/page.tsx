@@ -119,7 +119,7 @@ export default function LoginPage() {
                   <Loader2 className="h-5 w-5 animate-spin" />
                 ) : (
                   <>
-                    <span className="absolute left-0 inset-y-0 flex items-center pl-3">
+                    <span className="absolute left-40 inset-y-0 flex items-center pl-3">
                       <LogIn className="h-5 w-5 text-red-300 group-hover:text-red-200" />
                     </span>
                     Sign in
