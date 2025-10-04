@@ -4,17 +4,25 @@ import { useState, useEffect, Fragment, FormEvent } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { getUploadPresignedUrl } from '@/services/adminService';
 import { toast } from 'react-hot-toast';
-import { Loader2, UploadCloud, X } from 'lucide-react';
+import { Loader2, UploadCloud, X, Plus, Trash2, Tag, IndianRupee, Clock, List, ListX, ShieldQuestion } from 'lucide-react';
 
-export function CatalogFormModal({ isOpen, onClose, onSuccess, initialData, itemType, additionalData, token }: any) {
-    const [name, setName] = useState('');
-    const [imageUrl, setImageUrl] = useState('');
-    const [price, setPrice] = useState('');
-    const [duration, setDuration] = useState('');
-    const [inclusions, setInclusions] = useState<string[]>([]);
-    const [exclusions, setExclusions] = useState<string[]>([]);
-    const [type, setType] = useState('Appliance');
-    
+const FormInput = ({ icon: Icon, ...props }: { icon: React.ElementType, [key: string]: any }) => (
+    <div className="relative">
+        <Icon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none" />
+        <input {...props} className="pl-10 w-full h-12 text-base bg-slate-100 rounded-lg border-slate-300 focus:ring-red-500 focus:border-red-500" />
+    </div>
+);
+const FormSelect = ({ icon: Icon, children, ...props }: { icon: React.ElementType, children: React.ReactNode, [key: string]: any }) => (
+    <div className="relative">
+        <Icon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none" />
+        <select {...props} className="pl-10 pr-4 appearance-none w-full h-12 text-base bg-slate-100 rounded-lg border-slate-300 focus:ring-red-500 focus:border-red-500">
+            {children}
+        </select>
+    </div>
+);
+
+export function CatalogFormModal({ isOpen, onClose, onSuccess, initialData, itemType, token }: any) {
+    const [formData, setFormData] = useState({ name: '', imageUrl: '', price: '', duration: '', type: 'Appliance', inclusions: [] as string[], exclusions: [] as string[] });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
     
@@ -22,44 +30,27 @@ export function CatalogFormModal({ isOpen, onClose, onSuccess, initialData, item
 
     useEffect(() => {
         if (isOpen) {
-            if (initialData) {
-                setName(initialData.name || '');
-                setImageUrl(initialData.imageUrl || '');
-                setPrice(initialData.price || '');
-                setDuration(initialData.duration || '');
-                setInclusions(initialData.inclusions || []);
-                setExclusions(initialData.exclusions || []);
-                if (initialData.type) setType(initialData.type);
-            } else {
-                setName('');
-                setImageUrl('');
-                setPrice('');
-                setDuration('');
-                setInclusions([]);
-                setExclusions([]);
-                setType('Appliance');
-            }
+            setFormData({
+                name: initialData?.name || '',
+                imageUrl: initialData?.imageUrl || '',
+                price: initialData?.price || '',
+                duration: initialData?.duration || '',
+                type: initialData?.type || 'Appliance',
+                inclusions: initialData?.inclusions || [],
+                exclusions: initialData?.exclusions || []
+            });
         }
     }, [initialData, isOpen]);
 
-    const handleArrayChange = (field: 'inclusions' | 'exclusions', index: number, value: string) => {
-        const setter = field === 'inclusions' ? setInclusions : setExclusions;
-        setter(prev => {
-            const newArr = [...prev];
-            newArr[index] = value;
-            return newArr;
-        });
-    };
-    
-    const addArrayItem = (field: 'inclusions' | 'exclusions') => {
-        const setter = field === 'inclusions' ? setInclusions : setExclusions;
-        setter(prev => [...prev, '']);
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
     };
 
-    const removeArrayItem = (field: 'inclusions' | 'exclusions', index: number) => {
-        const setter = field === 'inclusions' ? setInclusions : setExclusions;
-        setter(prev => prev.filter((_, i) => i !== index));
+    const handleArrayChange = (setter: Function, index: number, value: string) => {
+        setter((prev: string[]) => prev.map((item, i) => (i === index ? value : item)));
     };
+    const addArrayItem = (setter: Function) => setter((prev: string[]) => [...prev, '']);
+    const removeArrayItem = (setter: Function, index: number) => setter((prev: string[]) => prev.filter((_, i) => i !== index));
     
     const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -68,105 +59,82 @@ export function CatalogFormModal({ isOpen, onClose, onSuccess, initialData, item
         try {
             const { uploadURL, imageUrl: finalImageUrl } = await getUploadPresignedUrl(file.type, token!);
             await fetch(uploadURL, { method: 'PUT', body: file, headers: { 'Content-Type': file.type } });
-            setImageUrl(finalImageUrl);
+            setFormData(prev => ({...prev, imageUrl: finalImageUrl}));
             toast.success('Image uploaded!');
-        } catch (error) {
-            toast.error('Image upload failed.');
-        } finally {
-            setIsUploading(false);
-        }
+        } catch (error) { toast.error('Image upload failed.'); } 
+        finally { setIsUploading(false); }
     };
 
-    const handleSubmit = (e: FormEvent) => {
+    const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
-
-        let finalData: any = { name, imageUrl, ...additionalData };
-
-        if (itemType === 'Service' || itemType === 'Sub-Service') {
-            if (!price || parseFloat(price) <= 0) {
-                toast.error('Please enter a valid price.');
-                return;
+        setIsSubmitting(true);
+        try {
+            const { price, ...restOfData } = formData;
+            let finalData: any = { ...restOfData, inclusions: formData.inclusions.filter(Boolean), exclusions: formData.exclusions.filter(Boolean) };
+            
+            if ((itemType === 'Service' || itemType === 'Sub-Service')) {
+                if (!price || parseFloat(price) <= 0) {
+                    toast.error('Please enter a valid price.');
+                    setIsSubmitting(false);
+                    return;
+                }
+                finalData.price = parseFloat(price);
             }
-            finalData.price = parseFloat(price);
-        }
-
-        if (itemType === 'Service') {
-            finalData.duration = duration;
-            finalData.inclusions = inclusions;
-            finalData.exclusions = exclusions;
-        }
-
-        if (itemType === 'Sub-Service') {
-            finalData.type = type;
-        }
-        
-        onSuccess(finalData);
+            await onSuccess(finalData);
+        } catch (error) { console.error("Submission failed:", error); } 
+        finally { setIsSubmitting(false); }
     };
+
+    const renderArrayField = (label: string, items: string[], setter: Function) => (
+        <div className="space-y-2">
+            <label className="text-sm font-semibold text-slate-700 flex items-center">{label === 'Inclusions' ? <List className="w-4 h-4 mr-2"/> : <ListX className="w-4 h-4 mr-2"/>}{label}</label>
+            {items.map((item, index) => (
+                <div key={index} className="flex items-center gap-2">
+                    <input value={item} onChange={(e) => handleArrayChange(setter, index, e.target.value)} className="flex-grow h-11 text-base bg-slate-100 rounded-lg border-slate-300" placeholder={`Enter ${label.slice(0, -1)}...`}/>
+                    <button type="button" onClick={() => removeArrayItem(setter, index)} className="p-2 text-slate-400 hover:text-red-600 rounded-full"><Trash2 size={16}/></button>
+                </div>
+            ))}
+            <button type="button" onClick={() => addArrayItem(setter)} className="text-sm font-semibold text-red-600 hover:text-red-800 flex items-center gap-1"><Plus size={14}/>Add {label.slice(0, -1)}</button>
+        </div>
+    );
 
     return (
         <Transition.Root show={isOpen} as={Fragment}>
             <Dialog as="div" className="relative z-50" onClose={onClose}>
-                <div className="fixed inset-0 bg-gray-500 bg-opacity-75" />
-                <div className="fixed inset-0 z-10 overflow-y-auto">
-                    <div className="flex min-h-full items-center justify-center p-4">
-                        <Dialog.Panel className="relative w-full max-w-3xl transform rounded-lg bg-white p-6 shadow-xl">
-                            <Dialog.Title as="h3" className="text-xl font-montserrat font-bold text-neutral-800">
-                                {isEditMode ? `Edit ${itemType}` : `Add New ${itemType}`}
-                            </Dialog.Title>
-                            <form onSubmit={handleSubmit} className="mt-6 space-y-4 max-h-[80vh] overflow-y-auto pr-2">
-                                <label htmlFor="file-upload" className="cursor-pointer flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
-                                    <div className="text-center">{isUploading ? <Loader2 className="animate-spin" /> : imageUrl ? <img src={imageUrl} alt="Uploaded" className="h-24 mx-auto"/> : <UploadCloud />}</div>
-                                    <input id="file-upload" type="file" className="sr-only" onChange={handleFileChange} accept="image/*" />
-                                </label>
-                                <input name="name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Name" required className="w-full rounded-md" />
-                                
-                                { (itemType === 'Service' || itemType === 'Sub-Service') &&
-                                    <input name="price" type="number" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="Price" required min="1" step="0.01" className="w-full rounded-md" />
-                                }
-                                
-                                { itemType === 'Service' && (
-                                    <>
-                                        <input name="duration" value={duration} onChange={(e) => setDuration(e.target.value)} placeholder="Duration (e.g., 60-90 Mins)" className="w-full rounded-md" />
-                                        <div>
-                                            <label className="font-semibold">Inclusions</label>
-                                            {inclusions.map((item, index) => (
-                                                <div key={index} className="flex items-center gap-2 mt-1">
-                                                    <input value={item} onChange={(e) => handleArrayChange('inclusions', index, e.target.value)} className="flex-grow rounded-md" />
-                                                    <button type="button" onClick={() => removeArrayItem('inclusions', index)} className="p-1 text-red-500"><X/></button>
-                                                </div>
-                                            ))}
-                                            <button type="button" onClick={() => addArrayItem('inclusions')} className="text-sm text-blue-600 mt-2">Add Inclusion</button>
-                                        </div>
-                                        <div>
-                                            <label className="font-semibold">Exclusions</label>
-                                            {exclusions.map((item, index) => (
-                                                <div key={index} className="flex items-center gap-2 mt-1">
-                                                    <input value={item} onChange={(e) => handleArrayChange('exclusions', index, e.target.value)} className="flex-grow rounded-md" />
-                                                    <button type="button" onClick={() => removeArrayItem('exclusions', index)} className="p-1 text-red-500"><X/></button>
-                                                </div>
-                                            ))}
-                                            <button type="button" onClick={() => addArrayItem('exclusions')} className="text-sm text-blue-600 mt-2">Add Exclusion</button>
-                                        </div>
-                                    </>
-                                )}
-
-                                 {itemType === 'Sub-Service' && (
-                                     <select name="type" value={type} onChange={(e) => setType(e.target.value)} className="w-full rounded-md border-gray-300">
-                                        <option value="Appliance">Appliance Type</option>
-                                        <option value="Problem">Problem Type</option>
-                                    </select>
-                                )}
-
-                                <div className="pt-4 flex justify-end gap-3">
-                                    <button type="button" onClick={onClose} className="rounded-md border bg-white px-4 py-2 text-sm">Cancel</button>
-                                    <button type="submit" disabled={isSubmitting || isUploading} className="inline-flex items-center rounded-md bg-brand-red px-4 py-2 text-sm font-medium text-white">
-                                        {isSubmitting ? <Loader2 className="animate-spin" /> : (isEditMode ? 'Save Changes' : `Create ${itemType}`)}
-                                    </button>
-                                </div>
-                            </form>
-                        </Dialog.Panel>
-                    </div>
-                </div>
+                <Transition.Child as={Fragment} enter="ease-out duration-300" enterFrom="opacity-0" enterTo="opacity-100" leave="ease-in duration-200" leaveFrom="opacity-100" leaveTo="opacity-0"><div className="fixed inset-0 bg-black/50 backdrop-blur-sm" /></Transition.Child>
+                <div className="fixed inset-0 z-10 overflow-y-auto"><div className="flex min-h-full items-center justify-center p-4">
+                <Transition.Child as={Fragment} enter="ease-out duration-300" enterFrom="opacity-0 scale-95" enterTo="opacity-100 scale-100" leave="ease-in duration-200" leaveFrom="opacity-100 scale-100" leaveTo="opacity-0 scale-95">
+                    <Dialog.Panel className="relative w-full max-w-3xl transform rounded-2xl bg-white shadow-xl flex flex-col">
+                        <div className="flex items-center justify-between p-6 border-b"><Dialog.Title as="h3" className="font-heading text-xl font-bold text-slate-800">{isEditMode ? `Edit ${itemType}` : `Add New ${itemType}`}</Dialog.Title><button onClick={onClose} className="p-2 rounded-full hover:bg-slate-100"><X className="text-slate-500"/></button></div>
+                        <form onSubmit={handleSubmit} className="p-6 space-y-6 overflow-y-auto max-h-[70vh]">
+                            <label htmlFor="file-upload" className="cursor-pointer group relative flex justify-center items-center rounded-xl border-2 border-dashed border-slate-300 h-48">
+                                {isUploading ? <div className="text-center"><Loader2 className="animate-spin w-8 h-8 text-red-600 mx-auto" /><p className="mt-2 text-sm text-slate-500">Uploading...</p></div>
+                                : formData.imageUrl ? <><img src={formData.imageUrl} alt="Uploaded" className="max-h-full max-w-full object-contain rounded-md"/><div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center rounded-xl"><span className="text-white font-semibold text-sm">Change Image</span></div></>
+                                : <div className="text-center text-slate-500"><UploadCloud className="mx-auto w-10 h-10" /><p className="mt-2 text-sm font-semibold">Click to upload image</p></div>}
+                                <input id="file-upload" type="file" className="sr-only" onChange={handleFileChange} accept="image/*" disabled={isUploading}/>
+                            </label>
+                            <FormInput icon={Tag} name="name" value={formData.name} onChange={handleChange} placeholder={`${itemType} Name`} required />
+                            {(itemType === 'Service' || itemType === 'Sub-Service') && <FormInput icon={IndianRupee} name="price" type="number" value={formData.price} onChange={handleChange} placeholder="Price" required min="1" step="0.01" />}
+                            <div className={`transition-all duration-300 ease-in-out grid gap-6 ${itemType === 'Service' ? 'grid-cols-1 md:grid-cols-2 max-h-[1000px] opacity-100' : 'max-h-0 opacity-0 overflow-hidden'}`}>
+                                {itemType === 'Service' && <>
+                                    <FormInput icon={Clock} name="duration" value={formData.duration} onChange={handleChange} placeholder="Duration (e.g., 60-90 Mins)" />
+                                    {renderArrayField('Inclusions', formData.inclusions, (items: string[]) => setFormData(p => ({...p, inclusions: items})))}
+                                    {renderArrayField('Exclusions', formData.exclusions, (items: string[]) => setFormData(p => ({...p, exclusions: items})))}
+                                </>}
+                            </div>
+                            <div className={`transition-all duration-300 ease-in-out ${itemType === 'Sub-Service' ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'}`}>
+                                {itemType === 'Sub-Service' && <FormSelect icon={ShieldQuestion} name="type" value={formData.type} onChange={handleChange}><option value="Appliance">Appliance Type</option><option value="Problem">Problem Type</option></FormSelect>}
+                            </div>
+                        </form>
+                        <div className="p-6 flex justify-end gap-3 border-t bg-slate-50/50 rounded-b-2xl">
+                            <button type="button" onClick={onClose} className="px-5 py-2.5 rounded-lg border bg-white text-sm font-semibold text-slate-700">Cancel</button>
+                            <button type="button" onClick={handleSubmit} disabled={isSubmitting || isUploading} className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-red-600 text-sm font-semibold text-white disabled:bg-slate-400">
+                                {isSubmitting ? <Loader2 className="animate-spin w-5 h-5"/> : (isEditMode ? 'Save Changes' : `Create ${itemType}`)}
+                            </button>
+                        </div>
+                    </Dialog.Panel>
+                </Transition.Child>
+                </div></div>
             </Dialog>
         </Transition.Root>
     );
