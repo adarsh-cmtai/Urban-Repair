@@ -51,7 +51,7 @@ export default function LoginPage() {
   }, [token, user, router]);
 
   return (
-    <div className="min-h-screen w-full lg:grid lg:grid-cols-2">
+    <div className="min-h-screen w-full lg:grid lg:grid-cols-2 relative">
 
       <Link 
         href="/" 
@@ -100,6 +100,15 @@ export default function LoginPage() {
                 />
               </div>
             </div>
+
+            <div className="flex items-center justify-end">
+              <div className="text-sm">
+                <Link href="/forgot-password" className="font-medium text-brand-red hover:text-red-700">
+                  Forgot your password?
+                </Link>
+              </div>
+            </div>
+
             <div>
               <button
                 type="submit"

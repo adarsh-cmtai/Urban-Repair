@@ -35,14 +35,18 @@ export function TrustBar() {
   `;
 
   return (
-    <section className="py-24 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-50 to-white">
+    <section className="py-12 bg-slate-50 relative overflow-hidden">
       <style>{animationStyles}</style>
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+      
+      <div className="absolute top-0 left-0 w-96 h-96 bg-red-100/50 rounded-full opacity-50 blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
+      <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-100/50 rounded-full opacity-50 blur-3xl translate-x-1/2 translate-y-1/2"></div>
+
+      <div className="relative max-w-7xl mx-auto px-6 lg:px-8 z-10">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-extrabold font-heading text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-slate-800">
+          <h2 className="text-4xl md:text-5xl font-extrabold font-heading text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-slate-800 text-balance">
             Why Thousands Trust Us
           </h2>
-          <p className="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">
+          <p className="mt-4 text-lg text-slate-600 max-w-2xl mx-auto text-pretty">
             Our commitment to quality and service speaks for itself through numbers we're proud of.
           </p>
         </div>
@@ -53,16 +57,18 @@ export function TrustBar() {
             return (
               <div
                 key={index}
-                className="animate-fade-in-up flex flex-col items-center justify-center text-center p-8 rounded-2xl bg-white/60 backdrop-blur-sm border border-slate-200/80 shadow-xl shadow-slate-300/40 transition-all duration-300 hover:shadow-2xl hover:shadow-red-500/20 hover:-translate-y-2 hover:border-white"
+                className="animate-fade-in-up flex items-center gap-5 text-left p-6 rounded-2xl bg-gradient-to-br from-white to-slate-50/50 border border-white shadow-xl shadow-slate-300/40 transition-all duration-300 hover:shadow-2xl hover:shadow-red-500/10 hover:-translate-y-2 hover:ring-2 hover:ring-red-500/20"
                 style={{ animationDelay: `${index * 150}ms`, animationFillMode: 'backwards' }}
               >
-                <div className="flex items-center justify-center w-16 h-16 mb-6 rounded-full bg-gradient-to-br from-red-600 to-red-700 shadow-lg shadow-red-500/40">
+                <div className="flex-shrink-0 flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-red-600 to-red-700 shadow-lg shadow-red-500/40">
                   <Icon className="w-8 h-8 text-white" />
                 </div>
-                <p className="font-heading font-extrabold text-5xl text-slate-900">
-                  {metric.number}
-                </p>
-                <p className="mt-2 text-base text-slate-600 font-medium">{metric.text}</p>
+                <div>
+                  <p className="font-heading font-extrabold text-4xl text-transparent bg-clip-text bg-gradient-to-br from-slate-800 to-red-600">
+                    {metric.number}
+                  </p>
+                  <p className="mt-1 text-sm text-slate-600 font-medium">{metric.text}</p>
+                </div>
               </div>
             );
           })}

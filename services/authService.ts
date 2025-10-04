@@ -46,3 +46,13 @@ export const getUserProfile = async (token: string) => {
     });
     return data;
 };
+
+export const forgotPassword = async (email: string) => {
+    const { data } = await api.post('/auth/forgot-password', { email });
+    return data;
+};
+
+export const resetPassword = async (token: string, password: string) => {
+    const { data } = await api.patch(`/auth/reset-password/${token}`, { password });
+    return data;
+};

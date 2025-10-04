@@ -13,6 +13,7 @@ import {
   Users2,
   BookOpen,
   MessageSquare,
+  Map,
 } from 'lucide-react';
 import { useDispatch } from 'react-redux';
 import { logout } from '@/store/authSlice';
@@ -27,6 +28,7 @@ const navigation = [
   { name: 'Service Catalog', href: '/admin/catalog', icon: Settings },
   { name: 'Blog Posts', href: '/admin/blog', icon: BookOpen },
   { name: 'Testimonials', href: '/admin/testimonials', icon: MessageSquare },
+  { name: 'Service Areas', href: '/admin/locations', icon: Map },
 ];
 
 const sidebarVariants: Variants = {
