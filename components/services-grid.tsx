@@ -135,7 +135,7 @@ export function SellApplianceSection() {
                   <button
                     key={category.title}
                     onClick={() => setActiveCategory(category)}
-                    className={`flex-shrink-0 group rounded-full lg:rounded-xl transition-all duration-300 transform 
+                    className={`flex-shrink-0 group rounded-full lg:rounded-xl transition-all cursor-pointer duration-300 transform 
                       py-3 px-5 font-semibold text-sm border 
                       lg:w-full lg:flex lg:items-center lg:text-left lg:p-4 lg:font-normal lg:border-2
                       ${isActive

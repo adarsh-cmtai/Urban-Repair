@@ -49,7 +49,7 @@ export function HeroSection() {
             <Link href="/services">
               <Button
                 size="lg"
-                className="bg-red-600 hover:bg-red-700 text-white px-8 h-14 text-lg font-semibold rounded-xl shadow-lg shadow-red-500/30 hover:shadow-red-600/40 transition-all duration-300 transform hover:-translate-y-1"
+                className="bg-red-600 cursor-pointer hover:bg-red-700 text-white px-8 h-14 text-lg font-semibold rounded-xl shadow-lg shadow-red-500/30 hover:shadow-red-600/40 transition-all duration-300 transform hover:-translate-y-1"
               >
                 <Wrench className="w-6 h-6 mr-3" />
                 Book a services
@@ -59,7 +59,7 @@ export function HeroSection() {
               <Button
                 size="lg"
                 variant="outline"
-                className="border-2 border-slate-300 text-slate-800 hover:bg-slate-100 hover:border-slate-400 px-8 h-14 text-lg font-semibold rounded-xl transition-all duration-300 transform hover:-translate-y-1"
+                className="border-2 border-slate-300 cursor-pointer text-slate-800 hover:bg-slate-100 hover:border-slate-400 px-8 h-14 text-lg font-semibold rounded-xl transition-all duration-300 transform hover:-translate-y-1"
               >
                 <LayoutGrid className="w-6 h-6 mr-3" />
                 Contact Us

@@ -77,7 +77,7 @@ export function ServiceAreaMap() {
                 </div>
                 <button
                   onClick={handleCheckArea}
-                  className="inline-flex items-center justify-center h-14 px-8 bg-red-600 text-white rounded-xl font-semibold shadow-lg"
+                  className="inline-flex cursor-pointer items-center justify-center h-14 px-8 bg-red-600 text-white rounded-xl font-semibold shadow-lg"
                 >
                   {searchResult.status === 'loading' ? <Loader2 className="w-5 h-5 animate-spin"/> : <><Search className="w-5 h-5 mr-2"/>Check</>}
                 </button>

@@ -163,8 +163,8 @@ export function TestimonialsSection() {
           </div>
           
           <div className="absolute -bottom-4 right-8 md:bottom-8 md:right-12 z-10 flex space-x-2">
-            <button onClick={prevTestimonial} className="w-12 h-12 bg-white rounded-full shadow-lg border flex items-center justify-center text-slate-600 hover:bg-red-500 hover:text-white transition-all transform hover:scale-110"><ChevronLeft/></button>
-            <button onClick={nextTestimonial} className="w-12 h-12 bg-white rounded-full shadow-lg border flex items-center justify-center text-slate-600 hover:bg-red-500 hover:text-white transition-all transform hover:scale-110"><ChevronRight/></button>
+            <button onClick={prevTestimonial} className="w-12 h-12 cursor-pointer bg-white rounded-full shadow-lg border flex items-center justify-center text-slate-600 hover:bg-red-500 hover:text-white transition-all transform hover:scale-110"><ChevronLeft/></button>
+            <button onClick={nextTestimonial} className="w-12 h-12 cursor-pointer bg-white rounded-full shadow-lg border flex items-center justify-center text-slate-600 hover:bg-red-500 hover:text-white transition-all transform hover:scale-110"><ChevronRight/></button>
           </div>
 
           <div className="absolute bottom-[-40px] left-1/2 -translate-x-1/2 flex justify-center space-x-3">
