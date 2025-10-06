@@ -66,11 +66,11 @@ export function Footer() {
           <div>
             <h3 className="font-semibold text-lg text-white mb-6">Our Services</h3>
             <ul className="space-y-3">
-              <li><Link href="/services/ac-repair" className="text-slate-400 hover:text-red-500 hover:translate-x-1 transition-all duration-300 block">AC Repair & Service</Link></li>
-              <li><Link href="/services/refrigerator-repair" className="text-slate-400 hover:text-red-500 hover:translate-x-1 transition-all duration-300 block">Refrigerator Repair</Link></li>
-              <li><Link href="/services/washing-machine" className="text-slate-400 hover:text-red-500 hover:translate-x-1 transition-all duration-300 block">Washing Machine Fix</Link></li>
-              <li><Link href="/sell-appliance" className="text-slate-400 hover:text-red-500 hover:translate-x-1 transition-all duration-300 block">Sell Your Appliance</Link></li>
-              <li><Link href="/interiors" className="text-slate-400 hover:text-red-500 hover:translate-x-1 transition-all duration-300 block">Interior Design</Link></li>
+              <li><Link href="/services" className="text-slate-400 hover:text-red-500 hover:translate-x-1 transition-all duration-300 block">AC Repair & Service</Link></li>
+              <li><Link href="/services" className="text-slate-400 hover:text-red-500 hover:translate-x-1 transition-all duration-300 block">Refrigerator Repair</Link></li>
+              <li><Link href="/services" className="text-slate-400 hover:text-red-500 hover:translate-x-1 transition-all duration-300 block">Washing Machine Fix</Link></li>
+              <li><Link href="/services" className="text-slate-400 hover:text-red-500 hover:translate-x-1 transition-all duration-300 block">Sell Your Appliance</Link></li>
+              {/* <li><Link href="/services" className="text-slate-400 hover:text-red-500 hover:translate-x-1 transition-all duration-300 block">Interior Design</Link></li> */}
             </ul>
           </div>
 
