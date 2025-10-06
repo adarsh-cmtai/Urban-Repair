@@ -3,13 +3,14 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { motion, Variants } from 'framer-motion';
-import { LayoutDashboard, History, User, LogOut, Wrench } from 'lucide-react';
+import { LayoutDashboard, History, User, LogOut, Wrench, Home } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '@/store/authSlice';
 import { RootState } from '@/store/store';
 import { toast } from 'react-hot-toast';
 
 const navigation = [
+  {name:'Back to Home Page', href:'/', icon:Home},
   { name: 'Today\'s Jobs', href: '/technician', icon: LayoutDashboard },
   { name: 'Job History', href: '/technician/history', icon: History },
   { name: 'My Profile', href: '/technician/profile', icon: User },

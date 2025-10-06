@@ -6,6 +6,7 @@ import { motion, Variants } from 'framer-motion';
 import {
   LayoutDashboard, Calendar, Wrench, Users, UserPlus,
   BookOpen, MessageSquare, Map, Settings2, LogOut,
+  Home,
 } from 'lucide-react';
 import { useDispatch } from 'react-redux';
 import { logout } from '@/store/authSlice';
@@ -30,6 +31,14 @@ const navGroups = [
       { name: 'Blog Posts', href: '/admin/blog', icon: BookOpen },
       { name: 'Testimonials', href: '/admin/testimonials', icon: MessageSquare },
     ],
+  },
+  {
+    title:"Back to Home",
+    links:[
+      {
+        name:'Home', href:'/', icon:Home,
+      }
+    ]
   },
 ];
 
