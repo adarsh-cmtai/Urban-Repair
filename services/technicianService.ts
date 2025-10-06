@@ -5,13 +5,18 @@ interface JobHistoryFilters {
     dateTo?: string;
 }
 
-export const getTodaysJobs = async (token: string) => {
-  const { data } = await api.get('/technician/jobs/today', {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+export const getTechnicianJobQueue = async (token: string) => {
+  const { data } = await api.get('/technician/jobs/queue', {
+    headers: { Authorization: `Bearer ${token}` }
   });
   return data;
+};
+
+export const acceptJob = async (bookingId: string, token: string) => {
+    const { data } = await api.patch(`/technician/jobs/${bookingId}/accept`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+    });
+    return data;
 };
 
 export const getJobHistory = async (filters: JobHistoryFilters, token: string) => {

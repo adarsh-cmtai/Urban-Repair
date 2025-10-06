@@ -185,3 +185,10 @@ export const deleteService = async (id: string, token: string) => {
 export const deleteSubService = async (id: string, token: string) => {
     return api.delete(`/admin/catalog/sub-services/${id}`, { headers: { Authorization: `Bearer ${token}` } });
 };
+
+export const offerJobToTechnicians = async (bookingId: string, technicianIds: string[], token: string) => {
+    const { data } = await api.patch(`/admin/bookings/${bookingId}/offer`, { technicianIds }, {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+    return data;
+};

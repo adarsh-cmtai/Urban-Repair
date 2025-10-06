@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useEffect, useState, Fragment } from 'react';
+import { useParams, useRouter } from 'next/navigation';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import { getJobDetails, startJob, updateJobDetails, completeJob } from '@/services/technicianService';
@@ -10,6 +10,7 @@ import { ImageUploader } from '@/components/technician/jobs/ImageUploader';
 import { StatusBadge } from '@/components/customer/StatusBadge';
 import { toast } from 'react-hot-toast';
 
+// Skeleton Loader for a premium loading experience
 function JobDetailsSkeleton() {
     return (
         <div className="space-y-8 animate-pulse max-w-5xl mx-auto">
@@ -34,6 +35,7 @@ function JobDetailsSkeleton() {
     );
 }
 
+// Reusable component for displaying info rows in cards
 const InfoRow = ({ label, value, icon: Icon, href }: { label: string, value: React.ReactNode, icon: React.ElementType, href?: string }) => {
     const content = (
         <div className="flex items-start gap-4 group">
@@ -132,7 +134,7 @@ export default function JobDetailsPage() {
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
                 <div className="lg:col-span-2 space-y-6">
-                    {job.status === 'Assigned' && (
+                    {job.status === 'Accepted' && (
                         <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 text-center">
                             <PlayCircle className="mx-auto h-16 w-16 text-red-500 mb-4" />
                             <h2 className="font-heading font-bold text-2xl text-slate-800">Ready to Begin?</h2>
