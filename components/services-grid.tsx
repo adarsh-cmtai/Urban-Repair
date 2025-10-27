@@ -4,6 +4,8 @@ import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/card"
 import { Wrench, Refrigerator, Zap, Tv, Wind, Microwave, ArrowRight, Loader2, WashingMachine, Fan } from "lucide-react"
+import { useSelector } from "react-redux"
+import { RootState } from "@/store/store"
 import { getFullCatalog } from "@/services/publicService"
 
 const icons = {
@@ -29,47 +31,59 @@ const getIconNameForCategory = (categoryTitle: string): keyof typeof icons => {
   return "Wrench";
 };
 
-interface SubCategory {
+interface ServiceCardData {
   serviceId: string;
-  subServiceId: string;
   title: string;
   description: string;
   image: string;
+  price: number;
 }
 
 interface ApplianceCategory {
   icon: keyof typeof icons;
   title: string;
   description: string;
-  subCategories: SubCategory[];
+  services: ServiceCardData[];
 }
 
 export function SellApplianceSection() {
   const [applianceCategories, setApplianceCategories] = useState<ApplianceCategory[]>([]);
   const [activeCategory, setActiveCategory] = useState<ApplianceCategory | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const { selectedLocation } = useSelector((state: RootState) => state.location);
 
   useEffect(() => {
     const fetchData = async () => {
+      if (!selectedLocation) {
+        setIsLoading(true);
+        return;
+      }
+
+      setIsLoading(true);
       try {
-        const response = await getFullCatalog();
-        const transformedData = response.data.map((category: any): ApplianceCategory => ({
+        const response = await getFullCatalog(selectedLocation._id);
+        
+        const transformedData: ApplianceCategory[] = response.data.map((category: any): ApplianceCategory => ({
           icon: getIconNameForCategory(category.name),
           title: category.name,
           description: `Expert solutions for your ${category.name.toLowerCase()}.`,
-          subCategories: category.services.flatMap((service: any) =>
-            service.subServices.map((subService: any) => ({
-              serviceId: service._id,
-              subServiceId: subService._id,
-              title: subService.name,
-              description: subService.description || `Reliable repair for ${subService.name.toLowerCase()}.`,
-              image: subService.imageUrl,
-            }))
-          ),
+          services: category.services.map((service: any) => ({
+            serviceId: service._id,
+            title: service.name,
+            description: service.inclusions?.[0] || `Reliable repair for ${service.name.toLowerCase()}.`,
+            image: service.imageUrl,
+            price: service.price,
+          }))
         }));
-        setApplianceCategories(transformedData);
-        if (transformedData.length > 0) {
-          setActiveCategory(transformedData[0]);
+
+        const categoriesWithServices = transformedData.filter((cat: ApplianceCategory) => cat.services.length > 0);
+        
+        setApplianceCategories(categoriesWithServices);
+
+        if (categoriesWithServices.length > 0) {
+          setActiveCategory(categoriesWithServices[0]);
+        } else {
+          setActiveCategory(null);
         }
       } catch (error) {
         console.error("Failed to fetch catalog data:", error);
@@ -79,7 +93,7 @@ export function SellApplianceSection() {
     };
 
     fetchData();
-  }, []);
+  }, [selectedLocation]);
 
   const animationStyles = `
     @keyframes fade-in { 
@@ -102,11 +116,18 @@ export function SellApplianceSection() {
       </section>
     );
   }
-
-  if (!activeCategory) {
+  
+  if (applianceCategories.length === 0 || !activeCategory) {
     return (
       <section className="bg-slate-50 py-24">
-        <p className="text-center text-slate-500 text-lg">No services available at the moment.</p>
+        <div className="text-center">
+            <h2 className="font-heading font-extrabold text-4xl sm:text-5xl text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-slate-900 mb-4 text-balance">
+                Our Expert Repair Services
+            </h2>
+            <p className="text-lg text-slate-500 max-w-3xl mx-auto text-pretty">
+                Sorry, no services are currently available for {selectedLocation?.areaName || 'your selected location'}. Please check back later or select a different location.
+            </p>
+        </div>
       </section>
     );
   }
@@ -163,19 +184,19 @@ export function SellApplianceSection() {
             </h3>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-              {activeCategory.subCategories.map((subCategory) => (
-                <Link href={`/services/${subCategory.serviceId}?selected=${subCategory.subServiceId}`} passHref key={subCategory.subServiceId}>
+              {activeCategory.services.map((service) => (
+                <Link href={`/services/${service.serviceId}`} passHref key={service.serviceId}>
                   <Card className="group bg-white rounded-2xl border border-slate-200/80 shadow-md shadow-slate-300/30 transition-all duration-300 hover:shadow-xl hover:-translate-y-1.5 hover:border-red-400 overflow-hidden flex flex-col h-full cursor-pointer">
                     <div className="aspect-video w-full overflow-hidden bg-white p-6">
                       <img
-                        src={subCategory.image}
-                        alt={subCategory.title}
+                        src={service.image}
+                        alt={service.title}
                         className="w-full h-full object-contain transition-transform duration-500 ease-in-out group-hover:scale-105"
                       />
                     </div>
                     <CardContent className="p-5 flex flex-col flex-grow bg-slate-50/50">
-                      <h4 className="font-bold text-lg text-slate-800 mb-2">{subCategory.title}</h4>
-                      <p className="text-slate-600 text-sm leading-relaxed flex-grow mb-4">{subCategory.description}</p>
+                      <h4 className="font-bold text-lg text-slate-800 mb-2">{service.title}</h4>
+                      <p className="text-slate-600 text-sm leading-relaxed flex-grow mb-4">{service.description}</p>
                       <div className="mt-auto pt-2">
                         <div className="inline-flex items-center justify-center font-semibold text-center rounded-lg text-red-600 bg-red-100/80 group-hover:bg-red-600 group-hover:text-white transition-all duration-300 py-2.5 px-4 text-sm w-full">
                           Book Service

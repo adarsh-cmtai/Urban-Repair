@@ -11,7 +11,7 @@ import { Service, CartItem } from './types';
 import { ServiceModal } from './ServiceModal';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
-import api from '@/services/api';
+import { getFullCatalog } from '@/services/publicService';
 
 const CheckIcon = () => (<Check className="w-4 h-4 text-green-600 mr-2 flex-shrink-0" />);
 
@@ -23,19 +23,21 @@ export default function UrbanRepairServicesPage() {
     const [selectedService, setSelectedService] = useState<Service | null>(null);
     const [cart, setCart] = useState<CartItem[]>([]);
     const { user } = useSelector((state: RootState) => state.auth);
+    const { selectedLocation } = useSelector((state: RootState) => state.location);
 
     const categoryRefs = useRef<{ [key: string]: HTMLElement | null }>({});
 
     useEffect(() => {
         const fetchServices = async () => {
+            if (!selectedLocation) return;
+            setLoading(true);
             try {
-                const res = await api.get('/public/services-by-category');
-                const data = res.data;
-                if (data.success) {
-                    setCategories(data.data);
+                const res = await getFullCatalog(selectedLocation._id);
+                if (res.success) {
+                    setCategories(res.data);
                 }
             } catch (error) {
-                toast.error('Failed to load services.');
+                toast.error('Failed to load services for your location.');
             } finally {
                 setLoading(false);
             }
@@ -44,7 +46,7 @@ export default function UrbanRepairServicesPage() {
 
         const storedCart = localStorage.getItem('cart');
         if (storedCart) setCart(JSON.parse(storedCart));
-    }, []);
+    }, [selectedLocation]);
 
     const updateCartInStorage = (newCart: CartItem[]) => {
         setCart(newCart);
@@ -124,6 +126,12 @@ export default function UrbanRepairServicesPage() {
 
                     <main className="lg:col-span-6 space-y-12 order-1 lg:order-2">
                         {loading && <div className="flex justify-center items-center h-96"><Loader2 className="w-10 h-10 animate-spin text-brand-red"/></div>}
+                        {!loading && categories.length === 0 && (
+                            <div className="text-center py-20">
+                                <h2 className="text-2xl font-bold">No Services Available</h2>
+                                <p className="text-slate-500 mt-2">Sorry, we do not currently offer services in {selectedLocation?.areaName}.</p>
+                            </div>
+                        )}
                         {categories.map(category => (
                             category.services && category.services.length > 0 && (
                                 <section key={category._id} ref={el => { if (el) categoryRefs.current[category._id] = el; }}>

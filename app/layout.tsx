@@ -4,7 +4,7 @@ import { Inter, Montserrat } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import { Suspense } from "react";
 import { ReduxProvider } from "@/components/ReduxProvider";
-import { AuthProvider } from "@/components/AuthProvider";
+import { AppInitializer } from "@/components/AppInitializer";
 import { Toaster } from "react-hot-toast";
 import "./globals.css";
 
@@ -34,10 +34,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.variable} ${montserrat.variable} font-sans`}>
         <ReduxProvider>
-          <AuthProvider>
+          <AppInitializer>
             <Toaster position="top-center" reverseOrder={false} />
             <Suspense fallback={null}>{children}</Suspense>
-          </AuthProvider>
+          </AppInitializer>
         </ReduxProvider>
         <Analytics />
       </body>

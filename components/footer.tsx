@@ -8,7 +8,7 @@ export function Footer() {
       <div className="relative max-w-7xl mx-auto px-6 lg:px-8 z-10">
         
         <div className="py-16 border-b border-slate-800">
-          <div className="bg-slate-900/50 rounded-2xl p-8 lg:p-12 border border-slate-800">
+          {/* <div className="bg-slate-900/50 rounded-2xl p-8 lg:p-12 border border-slate-800">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
               <div>
                 <h2 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400 mb-2">
@@ -33,7 +33,7 @@ export function Footer() {
                 </button>
               </form>
             </div>
-          </div>
+          </div> */}
         </div>
 
         <div className="py-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12">

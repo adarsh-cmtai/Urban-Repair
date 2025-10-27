@@ -1,6 +1,5 @@
 import api from './api';
 
-// --- Dashboard ---
 export const getAdminDashboardStats = async (token: string) => {
   const { data } = await api.get('/admin/dashboard', {
     headers: { Authorization: `Bearer ${token}` },
@@ -8,7 +7,6 @@ export const getAdminDashboardStats = async (token: string) => {
   return data;
 };
 
-// --- Booking Management ---
 interface BookingFilters {
     status?: string;
     technicianId?: string;
@@ -41,7 +39,6 @@ export const updateBookingStatus = async (bookingId: string, status: string, tok
     return data;
 };
 
-// --- Technician Management ---
 export const createTechnician = async (technicianData: any, token: string) => {
     const { data } = await api.post('/admin/technicians', technicianData, { headers: { Authorization: `Bearer ${token}` } });
     return data;
@@ -55,7 +52,6 @@ export const updateTechnician = async (id: string, technicianData: any, token: s
     return data;
 };
 
-// --- Customer Management ---
 export const createCustomer = async (customerData: any, token: string) => {
     const { data } = await api.post('/admin/customers', customerData, { headers: { Authorization: `Bearer ${token}` } });
     return data;
@@ -77,7 +73,6 @@ export const deleteCustomer = async (id: string, token: string) => {
     return data;
 };
 
-// --- Service Catalog Management ---
 export const getUploadPresignedUrl = async (fileType: string, token: string) => {
     const { data } = await api.post('/admin/catalog/generate-upload-url', { fileType }, { headers: { Authorization: `Bearer ${token}` } });
     return data;
@@ -119,7 +114,6 @@ export const updateSubService = async (id: string, subServiceData: any, token: s
     return data;
 };
 
-// --- Blog Management ---
 export const createBlog = async (blogData: any, token: string) => {
     const { data } = await api.post('/admin/blogs', blogData, { headers: { Authorization: `Bearer ${token}` } });
     return data;
@@ -188,6 +182,13 @@ export const deleteSubService = async (id: string, token: string) => {
 
 export const offerJobToTechnicians = async (bookingId: string, technicianIds: string[], token: string) => {
     const { data } = await api.patch(`/admin/bookings/${bookingId}/offer`, { technicianIds }, {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+    return data;
+};
+
+export const getAdminLocations = async (token: string) => {
+    const { data } = await api.get('/admin/locations', {
         headers: { Authorization: `Bearer ${token}` },
     });
     return data;

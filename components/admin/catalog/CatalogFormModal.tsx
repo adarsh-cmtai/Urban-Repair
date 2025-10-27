@@ -2,9 +2,9 @@
 
 import { useState, useEffect, Fragment, FormEvent } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
-import { getUploadPresignedUrl } from '@/services/adminService';
+import { getUploadPresignedUrl, getAdminLocations } from '@/services/adminService';
 import { toast } from 'react-hot-toast';
-import { Loader2, UploadCloud, X, Plus, Trash2, Tag, IndianRupee, Clock, List, ListX, ShieldQuestion } from 'lucide-react';
+import { Loader2, UploadCloud, X, Plus, Trash2, Tag, IndianRupee, Clock, List, ListX, ShieldQuestion, MapPin } from 'lucide-react';
 
 const FormInput = ({ icon: Icon, ...props }: { icon: React.ElementType, [key: string]: any }) => (
     <div className="relative">
@@ -22,7 +22,8 @@ const FormSelect = ({ icon: Icon, children, ...props }: { icon: React.ElementTyp
 );
 
 export function CatalogFormModal({ isOpen, onClose, onSuccess, initialData, itemType, token }: any) {
-    const [formData, setFormData] = useState({ name: '', imageUrl: '', price: '', duration: '', type: 'Appliance', inclusions: [] as string[], exclusions: [] as string[] });
+    const [formData, setFormData] = useState({ name: '', imageUrl: '', price: '', duration: '', type: 'Appliance', inclusions: [] as string[], exclusions: [] as string[], serviceableLocations: [] as string[] });
+    const [allLocations, setAllLocations] = useState([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
     
@@ -37,13 +38,27 @@ export function CatalogFormModal({ isOpen, onClose, onSuccess, initialData, item
                 duration: initialData?.duration || '',
                 type: initialData?.type || 'Appliance',
                 inclusions: initialData?.inclusions || [],
-                exclusions: initialData?.exclusions || []
+                exclusions: initialData?.exclusions || [],
+                serviceableLocations: initialData?.serviceableLocations?.map((loc: any) => loc._id) || []
             });
-        }
-    }, [initialData, isOpen]);
 
+            if (itemType === 'Service' && token) {
+                getAdminLocations(token).then(res => setAllLocations(res.data));
+            }
+        }
+    }, [initialData, isOpen, itemType, token]);
+    
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+    };
+    
+    const handleLocationToggle = (locationId: string) => {
+        setFormData(prev => {
+            const serviceableLocations = prev.serviceableLocations.includes(locationId)
+                ? prev.serviceableLocations.filter(id => id !== locationId)
+                : [...prev.serviceableLocations, locationId];
+            return { ...prev, serviceableLocations };
+        });
     };
 
     const handleArrayChange = (setter: Function, index: number, value: string) => {
@@ -115,16 +130,42 @@ export function CatalogFormModal({ isOpen, onClose, onSuccess, initialData, item
                             </label>
                             <FormInput icon={Tag} name="name" value={formData.name} onChange={handleChange} placeholder={`${itemType} Name`} required />
                             {(itemType === 'Service' || itemType === 'Sub-Service') && <FormInput icon={IndianRupee} name="price" type="number" value={formData.price} onChange={handleChange} placeholder="Price" required min="1" step="0.01" />}
-                            <div className={`transition-all duration-300 ease-in-out grid gap-6 ${itemType === 'Service' ? 'grid-cols-1 md:grid-cols-2 max-h-[1000px] opacity-100' : 'max-h-0 opacity-0 overflow-hidden'}`}>
-                                {itemType === 'Service' && <>
-                                    <FormInput icon={Clock} name="duration" value={formData.duration} onChange={handleChange} placeholder="Duration (e.g., 60-90 Mins)" />
-                                    {renderArrayField('Inclusions', formData.inclusions, (items: string[]) => setFormData(p => ({...p, inclusions: items})))}
-                                    {renderArrayField('Exclusions', formData.exclusions, (items: string[]) => setFormData(p => ({...p, exclusions: items})))}
-                                </>}
-                            </div>
-                            <div className={`transition-all duration-300 ease-in-out ${itemType === 'Sub-Service' ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'}`}>
-                                {itemType === 'Sub-Service' && <FormSelect icon={ShieldQuestion} name="type" value={formData.type} onChange={handleChange}><option value="Appliance">Appliance Type</option><option value="Problem">Problem Type</option></FormSelect>}
-                            </div>
+                            
+                            {itemType === 'Service' && (
+                                <>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <FormInput icon={Clock} name="duration" value={formData.duration} onChange={handleChange} placeholder="Duration (e.g., 60-90 Mins)" />
+                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        {renderArrayField('Inclusions', formData.inclusions, (items: string[]) => setFormData(p => ({...p, inclusions: items})))}
+                                        {renderArrayField('Exclusions', formData.exclusions, (items: string[]) => setFormData(p => ({...p, exclusions: items})))}
+                                    </div>
+                                    <div>
+                                        <label className="text-sm font-semibold text-slate-700 flex items-center mb-2"><MapPin className="w-4 h-4 mr-2"/>Serviceable Locations</label>
+                                        <p className="text-xs text-slate-500 mb-3">Select locations where this service is available. Leave empty for nationwide availability.</p>
+                                        <div className="max-h-48 overflow-y-auto space-y-2 p-3 border rounded-lg bg-slate-50">
+                                            {allLocations.map((loc: any) => (
+                                                <label key={loc._id} className="flex items-center gap-3 p-2 rounded-md hover:bg-slate-100 cursor-pointer">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={formData.serviceableLocations.includes(loc._id)}
+                                                        onChange={() => handleLocationToggle(loc._id)}
+                                                        className="h-4 w-4 rounded text-red-600 focus:ring-red-500"
+                                                    />
+                                                    <span className="text-sm font-medium text-slate-700">{loc.areaName}, {loc.pincode}</span>
+                                                </label>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </>
+                            )}
+
+                            {itemType === 'Sub-Service' && (
+                                <FormSelect icon={ShieldQuestion} name="type" value={formData.type} onChange={handleChange}>
+                                    <option value="Appliance">Appliance Type</option>
+                                    <option value="Problem">Problem Type</option>
+                                </FormSelect>
+                            )}
                         </form>
                         <div className="p-6 flex justify-end gap-3 border-t bg-slate-50/50 rounded-b-2xl">
                             <button type="button" onClick={onClose} className="px-5 py-2.5 rounded-lg border bg-white text-sm font-semibold text-slate-700">Cancel</button>

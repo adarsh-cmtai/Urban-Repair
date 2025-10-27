@@ -4,12 +4,48 @@ import { useState, useEffect } from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { Menu, X, ChevronDown, Wrench } from "lucide-react"
+import { Menu, X, ChevronDown, Wrench, MapPin } from "lucide-react"
 import { useSelector, useDispatch } from "react-redux"
 import { RootState, AppDispatch } from "@/store/store"
 import { logout } from "@/store/authSlice"
-import { toast } from "react-hot-toast";
+import { toast } from "react-hot-toast"
 import { getCategories } from "@/services/publicService"
+import { LocationModal } from "@/components/LocationModal"
+
+function LocationChanger() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { selectedLocation } = useSelector((state: RootState) => state.location);
+  const [hasMounted, setHasMounted] = useState(false);
+
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
+
+  if (!hasMounted) {
+    return (
+        <div className="flex items-center gap-2 text-sm font-semibold text-slate-700 bg-slate-100 rounded-full px-4 py-2 animate-pulse">
+            <MapPin className="w-4 h-4 text-slate-400" />
+            <span className="truncate max-w-[150px] h-5 w-24 bg-slate-200 rounded-md"></span>
+        </div>
+    );
+  }
+
+  return (
+    <>
+      <button 
+        onClick={() => setIsModalOpen(true)}
+        className="flex items-center gap-2 text-sm font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-full px-4 py-2 transition-colors"
+      >
+        <MapPin className="w-4 h-4 text-red-600" />
+        <span className="truncate max-w-[150px]">
+          {selectedLocation ? `${selectedLocation.areaName}, ${selectedLocation.pincode}` : "Select Location"}
+        </span>
+        <ChevronDown className="w-4 h-4 flex-shrink-0" />
+      </button>
+      <LocationModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+    </>
+  );
+}
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -103,7 +139,12 @@ export function Header() {
       <header className={`sticky top-0 z-50 transition-all duration-300 ${isScrolled ? "bg-white/95 backdrop-blur-sm border-b" : "bg-transparent py-2"}`}>
         <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
-            <Logo />
+            <div className="flex items-center gap-4">
+              <Logo />
+              <div className="hidden lg:block">
+                 <LocationChanger />
+              </div>
+            </div>
             <div className="hidden lg:flex items-center gap-10">
               <nav className="flex items-center gap-8">
                 {navLinks.map((link) =>
@@ -111,12 +152,11 @@ export function Header() {
                     <div key={link.label} className="relative group">
                       <Link href={link.href} className="flex items-center gap-1 text-base font-medium text-gray-600 hover:text-red-600">
                         {link.label}
-                        <ChevronDown className="w-4 h-4 group-hover:rotate-180" />
+                        <ChevronDown className="w-4 h-4 transition-transform group-hover:rotate-180" />
                       </Link>
                       <div className="absolute top-full left-1/2 -translate-x-1/2 mt-4 w-64 bg-white rounded-xl shadow-lg p-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
                         {link.submenu.map((sublink: any) => (
                           <Link key={sublink.label} href={sublink.href} className="flex items-center gap-3 p-3 rounded-lg text-slate-700 hover:bg-red-50">
-                            {/* <sublink.icon className="w-5 h-5 text-red-600" /> */}
                             <span>{sublink.label}</span>
                           </Link>
                         ))}
@@ -149,9 +189,12 @@ export function Header() {
                 )}
               </div>
             </div>
-            <button className="lg:hidden p-2" onClick={() => setIsMenuOpen(true)}>
-              <Menu />
-            </button>
+            <div className="lg:hidden flex items-center gap-2">
+              <LocationChanger />
+              <button className="p-2" onClick={() => setIsMenuOpen(true)}>
+                <Menu />
+              </button>
+            </div>
           </div>
         </div>
       </header>
@@ -175,7 +218,7 @@ export function Header() {
                     <div className="pl-4 border-l-2 space-y-1 py-2">
                       {link.submenu.map((sublink: any) => (
                         <Link key={sublink.label} href={sublink.href} className="flex items-center gap-3 py-2.5 rounded-md px-2">
-                          <sublink.icon className="w-5 h-5 text-red-500" />
+                          <Wrench className="w-5 h-5 text-red-500" />
                           <span>{sublink.label}</span>
                         </Link>
                       ))}

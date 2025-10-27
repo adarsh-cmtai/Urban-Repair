@@ -26,8 +26,8 @@ const navGroups = [
   {
     title: 'Content',
     links: [
-      { name: 'Service Catalog', href: '/admin/catalog', icon: Settings2 },
       { name: 'Service Areas', href: '/admin/locations', icon: Map },
+      { name: 'Service Catalog', href: '/admin/catalog', icon: Settings2 },
       { name: 'Blog Posts', href: '/admin/blog', icon: BookOpen },
       { name: 'Testimonials', href: '/admin/testimonials', icon: MessageSquare },
     ],
