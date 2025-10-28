@@ -61,11 +61,21 @@ export function CatalogFormModal({ isOpen, onClose, onSuccess, initialData, item
         });
     };
 
-    const handleArrayChange = (setter: Function, index: number, value: string) => {
-        setter((prev: string[]) => prev.map((item, i) => (i === index ? value : item)));
+    const handleArrayChange = (setter: React.Dispatch<React.SetStateAction<any>>, key: 'inclusions' | 'exclusions', index: number, value: string) => {
+        setter((prev: any) => {
+            const newArray = [...prev[key]];
+            newArray[index] = value;
+            return { ...prev, [key]: newArray };
+        });
     };
-    const addArrayItem = (setter: Function) => setter((prev: string[]) => [...prev, '']);
-    const removeArrayItem = (setter: Function, index: number) => setter((prev: string[]) => prev.filter((_, i) => i !== index));
+
+    const addArrayItem = (setter: React.Dispatch<React.SetStateAction<any>>, key: 'inclusions' | 'exclusions') => {
+        setter((prev: any) => ({ ...prev, [key]: [...prev[key], ''] }));
+    };
+
+    const removeArrayItem = (setter: React.Dispatch<React.SetStateAction<any>>, key: 'inclusions' | 'exclusions', index: number) => {
+        setter((prev: any) => ({ ...prev, [key]: prev[key].filter((_: any, i: number) => i !== index) }));
+    };
     
     const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -100,16 +110,16 @@ export function CatalogFormModal({ isOpen, onClose, onSuccess, initialData, item
         finally { setIsSubmitting(false); }
     };
 
-    const renderArrayField = (label: string, items: string[], setter: Function) => (
+    const renderArrayField = (label: string, items: string[], key: 'inclusions' | 'exclusions') => (
         <div className="space-y-2">
             <label className="text-sm font-semibold text-slate-700 flex items-center">{label === 'Inclusions' ? <List className="w-4 h-4 mr-2"/> : <ListX className="w-4 h-4 mr-2"/>}{label}</label>
             {items.map((item, index) => (
                 <div key={index} className="flex items-center gap-2">
-                    <input value={item} onChange={(e) => handleArrayChange(setter, index, e.target.value)} className="flex-grow h-11 text-base bg-slate-100 rounded-lg border-slate-300" placeholder={`Enter ${label.slice(0, -1)}...`}/>
-                    <button type="button" onClick={() => removeArrayItem(setter, index)} className="p-2 text-slate-400 hover:text-red-600 rounded-full"><Trash2 size={16}/></button>
+                    <input value={item} onChange={(e) => handleArrayChange(setFormData, key, index, e.target.value)} className="flex-grow h-11 text-base bg-slate-100 rounded-lg border-slate-300" placeholder={`Enter ${label.slice(0, -1)}...`}/>
+                    <button type="button" onClick={() => removeArrayItem(setFormData, key, index)} className="p-2 text-slate-400 hover:text-red-600 rounded-full"><Trash2 size={16}/></button>
                 </div>
             ))}
-            <button type="button" onClick={() => addArrayItem(setter)} className="text-sm font-semibold text-red-600 hover:text-red-800 flex items-center gap-1"><Plus size={14}/>Add {label.slice(0, -1)}</button>
+            <button type="button" onClick={() => addArrayItem(setFormData, key)} className="text-sm font-semibold text-red-600 hover:text-red-800 flex items-center gap-1"><Plus size={14}/>Add {label.slice(0, -1)}</button>
         </div>
     );
 
@@ -137,8 +147,8 @@ export function CatalogFormModal({ isOpen, onClose, onSuccess, initialData, item
                                         <FormInput icon={Clock} name="duration" value={formData.duration} onChange={handleChange} placeholder="Duration (e.g., 60-90 Mins)" />
                                     </div>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        {renderArrayField('Inclusions', formData.inclusions, (items: string[]) => setFormData(p => ({...p, inclusions: items})))}
-                                        {renderArrayField('Exclusions', formData.exclusions, (items: string[]) => setFormData(p => ({...p, exclusions: items})))}
+                                        {renderArrayField('Inclusions', formData.inclusions, 'inclusions')}
+                                        {renderArrayField('Exclusions', formData.exclusions, 'exclusions')}
                                     </div>
                                     <div>
                                         <label className="text-sm font-semibold text-slate-700 flex items-center mb-2"><MapPin className="w-4 h-4 mr-2"/>Serviceable Locations</label>
