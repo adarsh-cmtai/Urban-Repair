@@ -34,7 +34,18 @@ export default function UrbanRepairServicesPage() {
             try {
                 const res = await getFullCatalog(selectedLocation._id);
                 if (res.success) {
-                    setCategories(res.data);
+                    const categoriesWithRepairServices = res.data.map((category: any) => {
+                        const repairServices = category.services.filter(
+                            (service: any) => service.type === 'Repair' || !service.type
+                        );
+                        return { ...category, services: repairServices };
+                    });
+
+                    const finalCategories = categoriesWithRepairServices.filter(
+                        (category: any) => category.services.length > 0
+                    );
+                    
+                    setCategories(finalCategories);
                 }
             } catch (error) {
                 toast.error('Failed to load services for your location.');

@@ -30,3 +30,14 @@ export const getLocationByCoords = async (lat: number, lon: number) => {
     const { data } = await api.get(`/public/locations/by-coords?lat=${lat}&lon=${lon}`);
     return data;
 };
+
+export const getPublicBuybackServices = async () => {
+  const { data } = await api.get("/public/buyback-services")
+  return data
+}
+
+export const getPublicBuybackCatalog = async (locationId?: string) => {
+    const endpoint = locationId ? `/public/buyback-catalog-full?locationId=${locationId}` : '/public/buyback-catalog-full';
+    const { data } = await api.get(endpoint);
+    return data;
+};

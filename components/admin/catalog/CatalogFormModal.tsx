@@ -1,3 +1,5 @@
+// src/components/admin/catalog/CatalogFormModal.tsx
+
 'use client';
 
 import { useState, useEffect, Fragment, FormEvent } from 'react';
@@ -22,7 +24,17 @@ const FormSelect = ({ icon: Icon, children, ...props }: { icon: React.ElementTyp
 );
 
 export function CatalogFormModal({ isOpen, onClose, onSuccess, initialData, itemType, token }: any) {
-    const [formData, setFormData] = useState({ name: '', imageUrl: '', price: '', duration: '', type: 'Appliance', inclusions: [] as string[], exclusions: [] as string[], serviceableLocations: [] as string[] });
+    const [formData, setFormData] = useState({
+        name: '',
+        imageUrl: '',
+        price: '',
+        duration: '',
+        inclusions: [] as string[],
+        exclusions: [] as string[],
+        serviceableLocations: [] as string[],
+        // Sub-Service ke liye `type` field
+        type: 'Appliance',
+    });
     const [allLocations, setAllLocations] = useState([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
@@ -36,10 +48,10 @@ export function CatalogFormModal({ isOpen, onClose, onSuccess, initialData, item
                 imageUrl: initialData?.imageUrl || '',
                 price: initialData?.price || '',
                 duration: initialData?.duration || '',
-                type: initialData?.type || 'Appliance',
                 inclusions: initialData?.inclusions || [],
                 exclusions: initialData?.exclusions || [],
-                serviceableLocations: initialData?.serviceableLocations?.map((loc: any) => loc._id) || []
+                serviceableLocations: initialData?.serviceableLocations?.map((loc: any) => loc._id) || [],
+                type: initialData?.type || 'Appliance',
             });
 
             if (itemType === 'Service' && token) {
@@ -95,7 +107,16 @@ export function CatalogFormModal({ isOpen, onClose, onSuccess, initialData, item
         setIsSubmitting(true);
         try {
             const { price, ...restOfData } = formData;
-            let finalData: any = { ...restOfData, inclusions: formData.inclusions.filter(Boolean), exclusions: formData.exclusions.filter(Boolean) };
+            let finalData: any = { 
+                ...restOfData, 
+                inclusions: formData.inclusions.filter(Boolean), 
+                exclusions: formData.exclusions.filter(Boolean) 
+            };
+            
+            if (itemType === 'Service') {
+                const { type, ...serviceData } = finalData;
+                finalData = serviceData;
+            }
             
             if ((itemType === 'Service' || itemType === 'Sub-Service')) {
                 if (!price || parseFloat(price) <= 0) {

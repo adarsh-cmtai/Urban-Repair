@@ -1,22 +1,22 @@
+// src/components/RepairServicesSection.tsx (or wherever you placed it)
+
 "use client"
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/card"
-import { Wrench, Refrigerator, Zap, Tv, Wind, Microwave, ArrowRight, Loader2, WashingMachine, Fan } from "lucide-react"
+import { Wrench, Refrigerator, Zap, Tv, Wind, Microwave, ArrowRight, Loader2, WashingMachine, Fan, Clock } from "lucide-react"
 import { useSelector } from "react-redux"
 import { RootState } from "@/store/store"
 import { getFullCatalog } from "@/services/publicService"
 
+import { Swiper, SwiperSlide } from 'swiper/react'
+import { Navigation } from 'swiper/modules'
+import 'swiper/css'
+import 'swiper/css/navigation'
+
 const icons = {
-  Wind,
-  Refrigerator,
-  Zap,
-  Tv,
-  Wrench,
-  Microwave,
-  WashingMachine,
-  Fan,
+  Wind, Refrigerator, Zap, Tv, Wrench, Microwave, WashingMachine, Fan,
 }
 
 const getIconNameForCategory = (categoryTitle: string): keyof typeof icons => {
@@ -31,24 +31,25 @@ const getIconNameForCategory = (categoryTitle: string): keyof typeof icons => {
   return "Wrench";
 };
 
-interface ServiceCardData {
+interface SubServiceCardData {
+  subServiceId: string;
   serviceId: string;
   title: string;
-  description: string;
   image: string;
   price: number;
+  duration: string;
+  parentServiceName: string;
 }
 
-interface ApplianceCategory {
+interface CategoryData {
   icon: keyof typeof icons;
   title: string;
-  description: string;
-  services: ServiceCardData[];
+  subServices: SubServiceCardData[];
 }
 
 export function SellApplianceSection() {
-  const [applianceCategories, setApplianceCategories] = useState<ApplianceCategory[]>([]);
-  const [activeCategory, setActiveCategory] = useState<ApplianceCategory | null>(null);
+  const [categories, setCategories] = useState<CategoryData[]>([]);
+  const [activeCategory, setActiveCategory] = useState<CategoryData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { selectedLocation } = useSelector((state: RootState) => state.location);
 
@@ -58,50 +59,71 @@ export function SellApplianceSection() {
         setIsLoading(true);
         return;
       }
-
       setIsLoading(true);
       try {
         const response = await getFullCatalog(selectedLocation._id);
         
-        const transformedData: ApplianceCategory[] = response.data.map((category: any): ApplianceCategory => ({
-          icon: getIconNameForCategory(category.name),
-          title: category.name,
-          description: `Expert solutions for your ${category.name.toLowerCase()}.`,
-          services: category.services.map((service: any) => ({
-            serviceId: service._id,
-            title: service.name,
-            description: service.inclusions?.[0] || `Reliable repair for ${service.name.toLowerCase()}.`,
-            image: service.imageUrl,
-            price: service.price,
-          }))
-        }));
+        const transformedData: CategoryData[] = response.data.map((category: any): CategoryData => {
+          const allSubServices: SubServiceCardData[] = [];
 
-        const categoriesWithServices = transformedData.filter((cat: ApplianceCategory) => cat.services.length > 0);
-        
-        setApplianceCategories(categoriesWithServices);
+          const repairServices = category.services.filter((service: any) => service.type !== 'Sell');
 
-        if (categoriesWithServices.length > 0) {
-          setActiveCategory(categoriesWithServices[0]);
-        } else {
-          setActiveCategory(null);
-        }
+          repairServices.forEach((service: any) => {
+            if (service.subServices && service.subServices.length > 0) {
+              const subServiceCards = service.subServices.map((sub: any): SubServiceCardData => ({
+                subServiceId: sub._id,
+                serviceId: service._id,
+                title: sub.name,
+                image: sub.imageUrl || service.imageUrl,
+                price: sub.price,
+                duration: service.duration,
+                parentServiceName: service.name,
+              }));
+              allSubServices.push(...subServiceCards);
+            }
+          });
+          
+          return {
+            icon: getIconNameForCategory(category.name),
+            title: category.name,
+            subServices: allSubServices,
+          };
+        });
+
+        const categoriesWithSubServices = transformedData.filter(cat => cat.subServices.length > 0);
+        setCategories(categoriesWithSubServices);
+        setActiveCategory(categoriesWithSubServices[0] || null);
       } catch (error) {
         console.error("Failed to fetch catalog data:", error);
       } finally {
         setIsLoading(false);
       }
     };
-
     fetchData();
   }, [selectedLocation]);
 
-  const animationStyles = `
-    @keyframes fade-in { 
-      from { opacity: 0; transform: translateY(10px); } 
-      to { opacity: 1; transform: translateY(0); } 
+  const customStyles = `
+    .swiper-button-next, .swiper-button-prev {
+      background-color: white;
+      border-radius: 9999px;
+      width: 44px;
+      height: 44px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+      border: 1px solid #e5e7eb;
+      transition: all 0.2s ease-in-out;
     }
-    .animate-fade-in { 
-      animation: fade-in 0.5s ease-out forwards; 
+    .swiper-button-next:hover, .swiper-button-prev:hover {
+      background-color: #fef2f2;
+      transform: scale(1.05);
+    }
+    .swiper-button-next:after, .swiper-button-prev:after {
+      font-size: 18px;
+      font-weight: 700;
+      color: #dc2626;
+    }
+    .swiper-button-disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
     }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -110,106 +132,120 @@ export function SellApplianceSection() {
   if (isLoading) {
     return (
       <section className="bg-slate-50 py-24">
-        <div className="flex justify-center items-center h-64">
-          <Loader2 className="w-12 h-12 animate-spin text-red-600" />
-        </div>
+        <div className="flex justify-center items-center h-64"><Loader2 className="w-12 h-12 animate-spin text-red-600" /></div>
       </section>
     );
   }
   
-  if (applianceCategories.length === 0 || !activeCategory) {
+  if (categories.length === 0 || !activeCategory) {
     return (
-      <section className="bg-slate-50 py-24">
-        <div className="text-center">
-            <h2 className="font-heading font-extrabold text-4xl sm:text-5xl text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-slate-900 mb-4 text-balance">
-                Our Expert Repair Services
-            </h2>
-            <p className="text-lg text-slate-500 max-w-3xl mx-auto text-pretty">
-                Sorry, no services are currently available for {selectedLocation?.areaName || 'your selected location'}. Please check back later or select a different location.
-            </p>
+      <section className="bg-gradient-to-b from-slate-50 to-white py-2 sm:py-2">
+         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-12">
+              <h2 className="font-heading font-extrabold text-4xl sm:text-5xl text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-slate-900 mb-4 text-balance">Your Trusted Appliance Experts</h2>
+              <p className="text-lg text-slate-600 max-w-3xl mx-auto text-pretty">Fast, reliable, and professional repairs for all your home appliances.</p>
+            </div>
+            <div className="max-w-2xl mx-auto text-center py-12 px-6 bg-white border-2 border-dashed border-slate-200 rounded-2xl">
+                <div className="w-16 h-16 bg-slate-100 rounded-full grid place-items-center mx-auto mb-6">
+                    <Wrench className="w-8 h-8 text-slate-400" />
+                </div>
+                <h3 className="font-semibold text-xl text-slate-800">
+                    No Services Found in {selectedLocation?.areaName || 'Your Area'}
+                </h3>
+                <p className="text-slate-500 mt-2">
+                    Unfortunately, we don't offer services in your selected location at the moment. Please try changing your location or check back soon.
+                </p>
+            </div>
         </div>
       </section>
     );
   }
 
   return (
-    <section className="bg-gradient-to-b from-white to-slate-50 text-slate-900">
-      <style>{animationStyles}</style>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
-        <div className="text-center mb-16">
-          <h2 className="font-heading font-extrabold text-4xl sm:text-5xl text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-slate-900 mb-4 text-balance">
-            Our Expert Repair Services
-          </h2>
-          <p className="text-lg text-slate-600 max-w-3xl mx-auto text-pretty">
-            From ACs to Washing Machines, we provide reliable and professional repair services. Select a category to see more.
-          </p>
+    <section className="bg-gradient-to-b from-slate-50 to-white overflow-hidden">
+      <style>{customStyles}</style>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-10">
+        <div className="text-center mb-12">
+          <h2 className="font-heading font-extrabold text-4xl sm:text-5xl text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-slate-900 mb-4 text-balance">Your Trusted Appliance Experts</h2>
+          <p className="text-lg text-slate-600 max-w-3xl mx-auto text-pretty">Fast, reliable, and professional repairs for all your home appliances.</p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 lg:gap-12 relative">
-          
-          <aside className="col-span-full lg:col-span-3 sticky top-16 lg:top-24 bg-gray-50/95 backdrop-blur-sm z-20 lg:self-start lg:h-fit lg:bg-transparent lg:backdrop-blur-none mb-6 lg:mb-0 shadow-sm lg:shadow-none">
-            <div className="flex space-x-2 overflow-x-auto pb-4 -mx-4 px-4 whitespace-nowrap py-6 no-scrollbar lg:space-x-0 lg:flex-col lg:space-y-3 lg:overflow-visible lg:p-0">
-              {applianceCategories.map((category) => {
+        <div className="flex justify-center mb-10">
+            <div className="flex items-center space-x-2 overflow-x-auto no-scrollbar p-1.5">
+                {categories.map((category) => {
                 const Icon = icons[category.icon] || Wrench;
                 const isActive = activeCategory.title === category.title;
                 return (
-                  <button
+                    <button
                     key={category.title}
                     onClick={() => setActiveCategory(category)}
-                    className={`flex-shrink-0 group rounded-full lg:rounded-xl transition-all cursor-pointer duration-300 transform 
-                      py-3 px-5 font-semibold text-sm border 
-                      lg:w-full lg:flex lg:items-center lg:text-left lg:p-4 lg:font-normal lg:border-2
-                      ${isActive
-                        ? "bg-red-600 text-white border-red-600 shadow-md lg:bg-red-50 lg:text-red-700 lg:border-red-600 lg:scale-105"
-                        : "bg-white text-slate-700 border-slate-200 hover:bg-slate-100 lg:border-transparent lg:hover:bg-slate-100"
+                    className={`flex-shrink-0 group rounded-full transition-all duration-300 px-4 py-2 flex items-center space-x-2 text-sm font-semibold border-2
+                        ${isActive
+                        ? "bg-red-600 text-white border-red-600 shadow-md"
+                        : "bg-white text-slate-700 border-white hover:border-red-100 hover:text-red-700"
                     }`}
-                  >
-                    <Icon className={`w-5 h-5 mr-2 transition-colors duration-300 lg:w-7 lg:h-7 lg:mr-4 flex-shrink-0 ${isActive ? 'text-white lg:text-red-600' : 'text-slate-500 group-hover:text-red-600'}`} />
-                    <div className="flex-1 lg:min-w-0">
-                      <h3 className="text-sm lg:font-semibold lg:text-lg lg:text-slate-800">{category.title}</h3>
-                      <p className="text-xs text-slate-500 hidden lg:block truncate">{category.description}</p>
-                    </div>
-                  </button>
-                )
-              })}
+                    >
+                    <Icon className={`w-5 h-5 transition-colors duration-300 ${isActive ? 'text-white' : 'text-slate-500 group-hover:text-red-600'}`} />
+                    <span className="whitespace-nowrap">{category.title}</span>
+                    </button>
+                );
+                })}
             </div>
-          </aside>
+        </div>
 
-          <main
+        {activeCategory && activeCategory.subServices.length > 0 ? (
+          <Swiper
             key={activeCategory.title}
-            className="col-span-full lg:col-span-9 animate-fade-in"
+            modules={[Navigation]}
+            navigation
+            spaceBetween={24}
+            slidesPerView={1.3}
+            breakpoints={{
+              640: { slidesPerView: 2.3 },
+              768: { slidesPerView: 3.2 },
+              1280: { slidesPerView: 4 },
+            }}
+            className="!py-4"
           >
-            <h3 className="font-heading font-bold text-3xl md:text-4xl text-slate-900 mb-8 text-center lg:text-left">
-              Services for <span className="text-red-600">{activeCategory.title.replace(/ (Repair|Services)$/i, '')}</span>
-            </h3>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-              {activeCategory.services.map((service) => (
-                <Link href={`/services/${service.serviceId}`} passHref key={service.serviceId}>
-                  <Card className="group bg-white rounded-2xl border border-slate-200/80 shadow-md shadow-slate-300/30 transition-all duration-300 hover:shadow-xl hover:-translate-y-1.5 hover:border-red-400 overflow-hidden flex flex-col h-full cursor-pointer">
-                    <div className="aspect-video w-full overflow-hidden bg-white p-6">
+            {activeCategory.subServices.map((service) => (
+              <SwiperSlide key={service.subServiceId} className="h-full">
+                <Link href={`/services/${service.serviceId}`} className="group h-full flex">
+                  <Card className="bg-white rounded-2xl border border-slate-200/60 shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-2 hover:border-red-400 overflow-hidden flex flex-col w-full">
+                    <div className="h-40 w-full overflow-hidden">
                       <img
                         src={service.image}
                         alt={service.title}
-                        className="w-full h-full object-contain transition-transform duration-500 ease-in-out group-hover:scale-105"
+                        className="w-full h-full object-cover rounded-lg transition-transform duration-500 ease-in-out group-hover:scale-110"
                       />
                     </div>
-                    <CardContent className="p-5 flex flex-col flex-grow bg-slate-50/50">
-                      <h4 className="font-bold text-lg text-slate-800 mb-2">{service.title}</h4>
-                      <p className="text-slate-600 text-sm leading-relaxed flex-grow mb-4">{service.description}</p>
-                      <div className="mt-auto pt-2">
-                        <div className="inline-flex items-center justify-center font-semibold text-center rounded-lg text-red-600 bg-red-100/80 group-hover:bg-red-600 group-hover:text-white transition-all duration-300 py-2.5 px-4 text-sm w-full">
-                          Book Service
-                          <ArrowRight className="w-4 h-4 ml-2 transition-transform duration-300 group-hover:translate-x-1" />
+                    <CardContent className="p-4 flex flex-col flex-grow">
+                      <p className="text-xs font-semibold text-red-600 mb-1">{service.parentServiceName}</p>
+                      <h4 className="font-semibold text-base text-slate-900 leading-tight line-clamp-2 flex-grow">{service.title}</h4>
+                      {service.duration && (
+                        <div className="flex items-center text-xs text-slate-600 mt-3">
+                            <Clock className="w-3.5 h-3.5 mr-1 text-slate-400" />
+                            <span>{service.duration}</span>
+                        </div>
+                      )}
+                      <div className="mt-4 pt-4 flex items-center justify-between border-t border-slate-100">
+                        <span className="font-extrabold text-2xl text-slate-900">
+                          {service.price > 0 ? `₹${service.price.toLocaleString('en-IN')}` : 'Quote'}
+                        </span>
+                        <div className="w-10 h-10 rounded-full bg-slate-100 grid place-items-center transition-all duration-300 group-hover:bg-red-600">
+                          <ArrowRight className="w-5 h-5 text-slate-500 transition-colors duration-300 group-hover:text-white" />
                         </div>
                       </div>
                     </CardContent>
                   </Card>
                 </Link>
-              ))}
-            </div>
-          </main>
-        </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        ) : (
+          <div className="text-center py-12">
+            <p className="text-slate-500">No repair services found in this category.</p>
+          </div>
+        )}
       </div>
     </section>
   );

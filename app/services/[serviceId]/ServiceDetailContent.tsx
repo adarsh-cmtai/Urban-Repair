@@ -133,6 +133,7 @@ export function ServiceDetailContent({ service }: { service: Service }) {
     const handleProceedToCheckout = () => router.push(user ? '/checkout' : '/login?redirect=/checkout');
     
     const priceToShow = selectedSubService?.price ?? service.subServices?.[0]?.price ?? service.price;
+    const imageToShow = selectedSubService?.imageUrl || service.imageUrl;
     const canAddToCart = (service?.subServices && service.subServices.length > 0) ? !!selectedSubService : true;
 
     return (
@@ -145,7 +146,7 @@ export function ServiceDetailContent({ service }: { service: Service }) {
                         <div className="lg:col-span-2 space-y-16">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                                 <div className="bg-white p-4 rounded-2xl shadow-2xl shadow-slate-300/50 border border-slate-200/80 aspect-square">
-                                    <img src={service.imageUrl} alt={service.name} className="w-full h-full object-contain rounded-xl" />
+                                    <img src={imageToShow} alt={service.name} className="w-full h-full object-cover rounded-xl" />
                                 </div>
                                 <div className="space-y-4">
                                      <div className="flex items-center text-sm text-slate-500 font-medium">

@@ -8,20 +8,19 @@ import { ServiceAreaMap } from "@/components/service-area-map"
 import { TestimonialsSection } from "@/components/testimonials-section"
 import { PromotionalBanner } from "@/components/promotional-banner"
 import { Footer } from "@/components/footer"
+import { BuybackSection } from "@/components/BuybackSection"
 
-export default function HomePage() {
+export default async function HomePage() {
   return (
     <div className="min-h-screen bg-white">
       <Header />
       <main>
         <SellApplianceSection />
-        <HeroSection />
+        <BuybackSection />
         <TrustBar />
         <WhyChooseUs />
-        {/* <BrandsShowcase /> */}
         <ServiceAreaMap />
         <TestimonialsSection />
-        {/* <PromotionalBanner /> */}
       </main>
       <Footer />
     </div>

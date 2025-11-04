@@ -1,3 +1,5 @@
+// src/services/customerService.ts
+
 import api from './api';
 
 export const getDashboardSummary = async (token: string) => {
@@ -124,3 +126,23 @@ export const createRazorpayOrder = async (amount: number, token: string) => {
     return data;
 };
 
+export const getCustomerSellRequests = async (token: string) => {
+    const { data } = await api.get('/customer/sell-requests', {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+    return data;
+};
+
+export const getSellRequestDetails = async (id: string, token: string) => {
+    const { data } = await api.get(`/customer/sell-requests/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+    return data;
+};
+
+export const respondToSellRequestOffer = async (id: string, response: 'Accepted' | 'Declined', token: string) => {
+    const { data } = await api.patch(`/customer/sell-requests/${id}/respond`, { response }, {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+    return data;
+};

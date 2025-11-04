@@ -7,6 +7,8 @@ import {
   LayoutDashboard, Calendar, Wrench, Users, UserPlus,
   BookOpen, MessageSquare, Map, Settings2, LogOut,
   Home,
+  Tag,
+  ShoppingBag,
 } from 'lucide-react';
 import { useDispatch } from 'react-redux';
 import { logout } from '@/store/authSlice';
@@ -18,6 +20,7 @@ const navGroups = [
     links: [
       { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
       { name: 'Bookings', href: '/admin/bookings', icon: Calendar },
+      { name: 'Sell Requests', href: '/admin/sell-requests', icon: Tag }, 
       { name: 'Technicians', href: '/admin/technicians', icon: Wrench },
       { name: 'Customers', href: '/admin/Customers', icon: Users },
       { name: 'Create User', href: '/admin/users', icon: UserPlus },
@@ -27,7 +30,8 @@ const navGroups = [
     title: 'Content',
     links: [
       { name: 'Service Areas', href: '/admin/locations', icon: Map },
-      { name: 'Service Catalog', href: '/admin/catalog', icon: Settings2 },
+      { name: 'Repair Catalog', href: '/admin/catalog', icon: Settings2 },
+      { name: 'Buyback Services', href: '/admin/buyback-services', icon: ShoppingBag },
       { name: 'Blog Posts', href: '/admin/blog', icon: BookOpen },
       { name: 'Testimonials', href: '/admin/testimonials', icon: MessageSquare },
     ],

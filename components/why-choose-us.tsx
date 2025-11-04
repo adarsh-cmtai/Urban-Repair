@@ -35,7 +35,7 @@ export function WhyChooseUs() {
   `;
 
   return (
-    <section className="py-24 bg-gradient-to-b from-white to-slate-50">
+    <section className="py-10 bg-gradient-to-b from-white to-slate-50">
       <style>{animationStyles}</style>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
@@ -75,13 +75,13 @@ export function WhyChooseUs() {
           <div className="relative animate-fade-in-up order-1 lg:order-2" style={{ animationFillMode: 'backwards' }}>
             <div className="relative aspect-[4/5] max-w-md mx-auto">
                 <img
-                    src="/why-choose-us.jpg"
+                    src="/AC-7.jpg"
                     alt="Friendly technician providing excellent service"
                     className="w-full h-full object-cover rounded-2xl shadow-2xl shadow-slate-400/40"
                 />
                 <div className="absolute -bottom-8 -left-8 w-48 h-48">
                     <img
-                        src="/why-choose-us.jpg"
+                        src="/AC-7.jpg"
                         alt="Close-up of a repair"
                         className="w-full h-full object-cover rounded-2xl shadow-2xl shadow-slate-400/60 border-4 border-white"
                     />

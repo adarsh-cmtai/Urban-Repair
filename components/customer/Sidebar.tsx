@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { motion, Variants } from 'framer-motion';
-import { LayoutDashboard, Package, User, LogOut, PlusCircle, Wrench, Home } from 'lucide-react';
+import { LayoutDashboard, Package, User, LogOut, PlusCircle, Wrench, Home, Tag } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '@/store/authSlice';
 import { RootState } from '@/store/store';
@@ -13,6 +13,7 @@ const navigation = [
   {name:'Back to Home Page', href:'/', icon:Home},
   { name: 'Dashboard', href: '/customer', icon: LayoutDashboard },
   { name: 'My Bookings', href: '/customer/bookings', icon: Package },
+  { name: 'My Sell Requests', href: '/customer/sell-requests', icon: Tag },
   { name: 'My Profile', href: '/customer/profile', icon: User },
 ];
 

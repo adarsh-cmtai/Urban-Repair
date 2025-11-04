@@ -193,3 +193,107 @@ export const getAdminLocations = async (token: string) => {
     });
     return data;
 };
+
+
+interface SellRequestFilters {
+    status?: string;
+    search?: string;
+}
+
+export const getAdminSellRequests = async (filters: SellRequestFilters, token: string) => {
+    const params = new URLSearchParams();
+    if (filters.status) params.append('status', filters.status);
+    if (filters.search) params.append('search', filters.search);
+    
+    const { data } = await api.get(`/admin/sell-requests?${params.toString()}`, {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+    return data;
+};
+
+export const getAdminSellRequestById = async (id: string, token: string) => {
+    const { data } = await api.get(`/admin/sell-requests/${id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+    });
+    return data;
+};
+
+export const assignTechnicianForInspection = async (sellRequestId: string, technicianId: string, token: string) => {
+    const { data } = await api.patch(`/admin/sell-requests/${sellRequestId}/assign-inspection`, { technicianId }, {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+    return data;
+};
+
+export const assignTechnicianForPickup = async (sellRequestId: string, technicianId: string, token: string) => {
+    const { data } = await api.patch(`/admin/sell-requests/${sellRequestId}/assign-pickup`, { technicianId }, {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+    return data;
+};
+
+export const makeFinalOffer = async (sellRequestId: string, offerPrice: number, token: string) => {
+    const { data } = await api.patch(`/admin/sell-requests/${sellRequestId}/make-offer`, { offerPrice }, {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+    return data;
+};
+
+export const updateSellRequestStatus = async (sellRequestId: string, status: string, token: string) => {
+    const { data } = await api.patch(`/admin/sell-requests/${sellRequestId}/status`, { status }, {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+    return data;
+};
+
+
+export const getAdminBuybackServices = async (token: string) => {
+    const { data } = await api.get('/admin/buyback-services', {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+    return data;
+};
+
+export const createBuybackService = async (serviceData: any, token: string) => {
+    const { data } = await api.post('/admin/buyback-services', serviceData, {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+    return data;
+};
+
+export const updateBuybackService = async (id: string, serviceData: any, token: string) => {
+    const { data } = await api.put(`/admin/buyback-services/${id}`, serviceData, {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+    return data;
+};
+
+export const deleteBuybackService = async (id: string, token: string) => {
+    const { data } = await api.delete(`/admin/buyback-services/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+    return data;
+};
+
+
+export const getBuybackCategories = (token: string) => api.get('/admin/buyback-catalog/categories', { headers: { Authorization: `Bearer ${token}` } });
+export const createBuybackCategory = (data: any, token: string) => api.post('/admin/buyback-catalog/categories', data, { headers: { Authorization: `Bearer ${token}` } });
+export const updateBuybackCategory = (id: string, data: any, token: string) => api.put(`/admin/buyback-catalog/categories/${id}`, data, { headers: { Authorization: `Bearer ${token}` } });
+export const deleteBuybackCategory = (id: string, token: string) => api.delete(`/admin/buyback-catalog/categories/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+
+export const getBuybackCapacities = (categoryId: string, token: string) => api.get(`/admin/buyback-catalog/capacities?categoryId=${categoryId}`, { headers: { Authorization: `Bearer ${token}` } });
+export const createBuybackCapacity = (data: any, token: string) => api.post('/admin/buyback-catalog/capacities', data, { headers: { Authorization: `Bearer ${token}` } });
+export const updateBuybackCapacity = (id: string, data: any, token: string) => api.put(`/admin/buyback-catalog/capacities/${id}`, data, { headers: { Authorization: `Bearer ${token}` } });
+export const deleteBuybackCapacity = (id: string, token: string) => api.delete(`/admin/buyback-catalog/capacities/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+
+export const getBuybackBrands = (capacityId: string, token: string) => api.get(`/admin/buyback-catalog/brands?capacityId=${capacityId}`, { headers: { Authorization: `Bearer ${token}` } });
+export const createBuybackBrand = (data: any, token: string) => api.post('/admin/buyback-catalog/brands', data, { headers: { Authorization: `Bearer ${token}` } });
+export const updateBuybackBrand = (id: string, data: any, token: string) => api.put(`/admin/buyback-catalog/brands/${id}`, data, { headers: { Authorization: `Bearer ${token}` } });
+export const deleteBuybackBrand = (id: string, token: string) => api.delete(`/admin/buyback-catalog/brands/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+
+export const generateSuggestedPrice = async (sellRequestId: string, token: string) => {
+    const { data } = await api.post(`/admin/sell-requests/${sellRequestId}/generate-price`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+    });
+    return data;
+};
