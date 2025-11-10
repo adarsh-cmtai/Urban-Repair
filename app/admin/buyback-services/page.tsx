@@ -70,7 +70,7 @@ export default function BuybackCatalogPage() {
             <div><h1 className="font-heading text-4xl font-extrabold text-slate-800">Buyback Catalog</h1><p className="mt-2 text-slate-500">Manage the hierarchy of products you want to buy from customers.</p></div>
             <div className="flex flex-col lg:flex-row gap-6 items-start">
                 {renderColumn('Product Categories', categories, isLoading.categories, () => handleOpenModal('Category'), setSelectedCategory, selectedCategory, 'Category', Tag)}
-                {renderColumn('Capacities', capacities, isLoading.capacities, () => handleOpenModal('Capacity'), setSelectedCapacity, selectedCapacity, 'Capacity', SlidersHorizontal, !selectedCategory)}
+                {renderColumn('Capacities or type', capacities, isLoading.capacities, () => handleOpenModal('Capacity'), setSelectedCapacity, selectedCapacity, 'Capacity', SlidersHorizontal, !selectedCategory)}
                 {renderColumn('Brands', brands, isLoading.brands, () => handleOpenModal('Brand'), () => {}, null, 'Brand', Building, !selectedCapacity)}
             </div>
             <BuybackCatalogFormModal 

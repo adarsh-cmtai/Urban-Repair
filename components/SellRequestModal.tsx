@@ -5,8 +5,8 @@ import { Dialog, Transition } from '@headlessui/react';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import { toast } from 'react-hot-toast';
-import { Loader2, X, UploadCloud, ArrowLeft, CheckCircle, Trash2, Check } from 'lucide-react';
-import { getCustomerProfile } from '@/services/customerService';
+import { Loader2, X, UploadCloud, ArrowLeft, CheckCircle, Trash2, Check, Plus } from 'lucide-react';
+import { getCustomerProfile, addCustomerAddress } from '@/services/customerService';
 import api from '@/services/api';
 
 interface Condition {
@@ -22,6 +22,8 @@ const emptyForm = {
     inspectionDate: '',
     inspectionTimeSlot: ''
 };
+
+const newAddressEmptyForm = { street: '', city: 'Hyderabad', state: 'Telangana', zipCode: '', label: 'Other' };
 
 const StepSidebar = ({ currentStep }: { currentStep: number }) => {
     const steps = [
@@ -88,9 +90,12 @@ export function SellRequestModal({ isOpen, onClose, category }: { isOpen: boolea
     const [selectedCapacity, setSelectedCapacity] = useState<any | null>(null);
     const [selectedBrand, setSelectedBrand] = useState<any | null>(null);
     const [formData, setFormData] = useState(emptyForm);
-    const [customerAddresses, setCustomerAddresses] = useState([]);
+    const [customerAddresses, setCustomerAddresses] = useState<any[]>([]);
     const [isUploading, setIsUploading] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isAddingAddress, setIsAddingAddress] = useState(false);
+    const [newAddress, setNewAddress] = useState(newAddressEmptyForm);
+
     const { token, user } = useSelector((state: RootState) => state.auth);
 
     useEffect(() => {
@@ -107,6 +112,8 @@ export function SellRequestModal({ isOpen, onClose, category }: { isOpen: boolea
                 setSelectedCapacity(null);
                 setSelectedBrand(null);
                 setFormData(emptyForm);
+                setIsAddingAddress(false);
+                setNewAddress(newAddressEmptyForm);
             }, 300);
         }
     }, [isOpen, token, user]);
@@ -148,6 +155,28 @@ export function SellRequestModal({ isOpen, onClose, category }: { isOpen: boolea
     };
 
     const removeImage = (index: number) => setFormData(prev => ({ ...prev, productImages: prev.productImages.filter((_, i) => i !== index) }));
+    
+    const handleAddNewAddress = async () => {
+        if (!newAddress.street || !newAddress.city || !newAddress.zipCode) {
+            toast.error("Please fill all address fields.");
+            return;
+        }
+        setIsSubmitting(true);
+        try {
+            const res = await addCustomerAddress(newAddress, token!);
+            const updatedAddresses = res.data.addresses;
+            const newlyAddedAddress = updatedAddresses[updatedAddresses.length - 1];
+            setCustomerAddresses(updatedAddresses);
+            setFormData(prev => ({ ...prev, addressId: newlyAddedAddress._id }));
+            setIsAddingAddress(false);
+            setNewAddress(newAddressEmptyForm);
+            toast.success("New address added and selected!");
+        } catch (error) {
+            toast.error("Failed to add address.");
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
@@ -233,7 +262,31 @@ export function SellRequestModal({ isOpen, onClose, category }: { isOpen: boolea
                      <div className="pt-6 border-t">
                         <h4 className="font-semibold text-slate-800 mb-2">Schedule Inspection & Pickup</h4>
                         <div className="space-y-4">
-                            <div><label className="text-sm font-medium text-slate-700">Address</label><select value={formData.addressId} onChange={e => setFormData({ ...formData, addressId: e.target.value })} required className="mt-1 w-full h-11 px-3 rounded-lg border-slate-300 focus:border-red-500 focus:ring-red-500">{customerAddresses.map((addr: any) => <option key={addr._id} value={addr._id}>{`${addr.label}: ${addr.street}, ${addr.city}`}</option>)}</select></div>
+                            <div>
+                                <label className="text-sm font-medium text-slate-700">Address</label>
+                                {!isAddingAddress && (
+                                <>
+                                <select value={formData.addressId} onChange={e => setFormData({ ...formData, addressId: e.target.value })} required className="mt-1 w-full h-11 px-3 rounded-lg border-slate-300 focus:border-red-500 focus:ring-red-500">{customerAddresses.map((addr: any) => <option key={addr._id} value={addr._id}>{`${addr.label}: ${addr.street}, ${addr.city}`}</option>)}</select>
+                                <button type="button" onClick={() => setIsAddingAddress(true)} className="text-sm font-semibold text-red-600 hover:underline mt-2 flex items-center gap-1"><Plus size={14}/> Add New Address</button>
+                                </>
+                                )}
+                            </div>
+                            {isAddingAddress && (
+                                <div className="p-4 border rounded-lg bg-slate-50 space-y-3">
+                                    <input value={newAddress.street} onChange={e => setNewAddress({...newAddress, street: e.target.value})} placeholder="Street" className="w-full h-11 px-3 rounded-lg border-slate-300"/>
+                                    <div className="grid grid-cols-3 gap-2">
+                                        <input value={newAddress.city} onChange={e => setNewAddress({...newAddress, city: e.target.value})} placeholder="City" className="w-full h-11 px-3 rounded-lg border-slate-300"/>
+                                        <input value={newAddress.state} onChange={e => setNewAddress({...newAddress, state: e.target.value})} placeholder="State" className="w-full h-11 px-3 rounded-lg border-slate-300"/>
+                                        <input value={newAddress.zipCode} onChange={e => setNewAddress({...newAddress, zipCode: e.target.value})} placeholder="Pincode" className="w-full h-11 px-3 rounded-lg border-slate-300"/>
+                                    </div>
+                                    <div className="flex gap-2 justify-end">
+                                        <button type="button" onClick={() => setIsAddingAddress(false)} className="px-3 py-1.5 text-sm rounded-md border">Cancel</button>
+                                        <button type="button" onClick={handleAddNewAddress} disabled={isSubmitting} className="px-3 py-1.5 text-sm rounded-md bg-red-600 text-white disabled:bg-slate-400">
+                                            {isSubmitting ? <Loader2 className="animate-spin w-4 h-4"/> : 'Save & Select'}
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
                             <div className="grid grid-cols-2 gap-4">
                                 <div><label className="text-sm font-medium text-slate-700">Date</label><input type="date" value={formData.inspectionDate} min={new Date().toISOString().split("T")[0]} onChange={e => setFormData({ ...formData, inspectionDate: e.target.value })} required className="mt-1 w-full h-11 px-3 rounded-lg border-slate-300 focus:border-red-500 focus:ring-red-500" /></div>
                                 <div><label className="text-sm font-medium text-slate-700">Time Slot</label><select value={formData.inspectionTimeSlot} onChange={e => setFormData({ ...formData, inspectionTimeSlot: e.target.value })} required className="mt-1 w-full h-11 px-3 rounded-lg border-slate-300 focus:border-red-500 focus:ring-red-500"><option value="">Select Time</option><option>09:00 AM - 11:00 AM</option><option>11:00 AM - 01:00 PM</option><option>02:00 PM - 04:00 PM</option><option>04:00 PM - 06:00 PM</option></select></div>
