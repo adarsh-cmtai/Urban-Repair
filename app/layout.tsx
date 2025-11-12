@@ -43,8 +43,9 @@ export default function RootLayout({
                 Website Temporarily Down
               </h1>
               <p className="text-gray-700 mb-6">
-                This website has been temporarily taken down due to non-payment.
-                Please contact the administrator for more information.
+                Due to the lack of response from your side and the 
+                pending payment, we have temporarily disabled your services.
+                Please clear the outstanding dues at the earliest to resume normal operations.
               </p>
               <p className="text-sm text-gray-500">
                 © {new Date().getFullYear()} Urban Repair
