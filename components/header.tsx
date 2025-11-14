@@ -127,7 +127,7 @@ export function Header() {
 
   const Logo = () => (
     <Link href="/" className="flex-shrink-0">
-      <img src="/Logo-1.png" alt="UrbanRepair Logo" className="h-16 w-auto object-contain" />
+      <img src="/Logo-2.jpg" alt="UrbanRepair Logo" className="h-16 w-auto object-contain rounded-2xl mt-1" />
     </Link>
   )
 

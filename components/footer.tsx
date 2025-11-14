@@ -6,7 +6,7 @@ export function Footer() {
     <footer className="relative bg-slate-950 text-slate-300 overflow-hidden">
       <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:radial-gradient(ellipse_at_center,white_20%,transparent_70%)] opacity-5"></div>
       <div className="relative max-w-7xl mx-auto px-6 lg:px-8 z-10">
-        
+
         <div className="py-16 border-b border-slate-800">
           {/* <div className="bg-slate-900/50 rounded-2xl p-8 lg:p-12 border border-slate-800">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
@@ -39,11 +39,18 @@ export function Footer() {
         <div className="py-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12">
           <div className="lg:col-span-2">
             <div className="flex items-center space-x-3 mb-6">
-              <div className="w-12 h-12 bg-red-600 rounded-xl flex items-center justify-center shadow-lg shadow-red-800/50">
-                <Wrench className="w-6 h-6 text-white" />
+              <div className="w-12 h-12 rounded-xl overflow-hidden shadow-lg shadow-red-800/50">
+                <img
+                  src="/Logo-2.jpg"
+                  alt="Logo"
+                  className="w-full h-full object-cover rounded-2xl"
+                />
               </div>
-              <span className="font-heading font-bold text-3xl text-white">Urban Repair Expert</span>
+              <span className="font-heading font-bold text-3xl text-white">
+                Urban Repair Expert
+              </span>
             </div>
+
             <p className="mb-8 leading-relaxed max-w-sm text-slate-400">
               Redefining luxury-class appliance care in Hyderabad. We don't just fix machines—we build relationships.
             </p>

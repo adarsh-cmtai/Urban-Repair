@@ -20,7 +20,7 @@ const navGroups = [
     links: [
       { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
       { name: 'Bookings', href: '/admin/bookings', icon: Calendar },
-      { name: 'Sell Requests', href: '/admin/sell-requests', icon: Tag }, 
+      { name: 'Sell Requests', href: '/admin/sell-requests', icon: Tag },
       { name: 'Technicians', href: '/admin/technicians', icon: Wrench },
       { name: 'Customers', href: '/admin/Customers', icon: Users },
       { name: 'Create User', href: '/admin/users', icon: UserPlus },
@@ -37,10 +37,10 @@ const navGroups = [
     ],
   },
   {
-    title:"Back to Home",
-    links:[
+    title: "Back to Home",
+    links: [
       {
-        name:'Home', href:'/', icon:Home,
+        name: 'Home', href: '/', icon: Home,
       }
     ]
   },
@@ -62,9 +62,8 @@ function NavItem({ item, isActive }: { item: typeof navGroups[0]['links'][0], is
     <motion.li variants={itemVariants}>
       <Link
         href={item.href}
-        className={`group relative flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors duration-200 ${
-          isActive ? 'text-white' : 'text-slate-400 hover:bg-slate-800/50 hover:text-white'
-        }`}
+        className={`group relative flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors duration-200 ${isActive ? 'text-white' : 'text-slate-400 hover:bg-slate-800/50 hover:text-white'
+          }`}
       >
         {isActive && (
           <motion.div
@@ -74,9 +73,8 @@ function NavItem({ item, isActive }: { item: typeof navGroups[0]['links'][0], is
           />
         )}
         <Icon
-          className={`h-5 w-5 shrink-0 transition-colors duration-200 ${
-            isActive ? 'text-red-500' : 'text-slate-500 group-hover:text-slate-300'
-          }`}
+          className={`h-5 w-5 shrink-0 transition-colors duration-200 ${isActive ? 'text-red-500' : 'text-slate-500 group-hover:text-slate-300'
+            }`}
         />
         <span>{item.name}</span>
       </Link>
@@ -98,17 +96,23 @@ export function Sidebar() {
   return (
     <aside className="relative flex h-screen w-64 flex-col border-r border-slate-800 bg-slate-900">
       <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:radial-gradient(ellipse,white_5%,transparent_80%)] opacity-5"></div>
-      
-      <div className="relative flex h-20 shrink-0 items-center border-b border-slate-800 px-6">
-        <Link href="/admin/dashboard" className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center shadow-lg shadow-red-900/50">
-            <Wrench className="w-5 h-5 text-white" />
+
+      <div className="flex h-20 shrink-0 items-center px-2">
+        <Link href="/" className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-lg overflow-hidden shadow-lg shadow-red-900/50">
+            <img
+              src="/Logo-2.jpg"
+              alt="Urban Repair Expert Logo"
+              className="w-full h-full object-cover"
+            />
           </div>
+
           <span className="font-heading text-xl font-bold text-white">
             Urban Repair<span className="text-red-500"> Expert</span>
           </span>
         </Link>
       </div>
+
 
       <motion.nav
         variants={sidebarVariants}
