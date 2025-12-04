@@ -30,7 +30,7 @@ export default async function BlogPage() {
         <BlogHero />
         {/* <BlogCategories /> */}
         <BlogGrid articles={articles} />
-        <NewsletterSignup />
+        {/* <NewsletterSignup /> */}
       </main>
       <Footer/>
     </div>

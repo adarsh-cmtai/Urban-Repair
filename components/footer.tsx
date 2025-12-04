@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { Wrench, Phone, Mail, MapPin, Facebook, Twitter, Instagram, Linkedin, Send } from "lucide-react"
+import { FaWhatsapp } from "react-icons/fa";
 
 export function Footer() {
   return (
@@ -55,18 +56,23 @@ export function Footer() {
               Redefining luxury-class appliance care in Hyderabad. We don't just fix machines—we build relationships.
             </p>
             <div className="flex space-x-3">
-              <a href="#" className="w-10 h-10 border border-slate-700 rounded-full flex items-center justify-center text-slate-400 hover:bg-red-600 hover:text-white hover:border-red-600 transition-all transform hover:scale-110">
+              <a href="https://www.facebook.com/share/14VfaWnjsyF/" target="_blank" className="w-10 h-10 border border-slate-700 rounded-full flex items-center justify-center text-slate-400 hover:bg-red-600 hover:text-white hover:border-red-600 transition-all transform hover:scale-110">
                 <Facebook className="w-5 h-5" />
               </a>
-              <a href="#" className="w-10 h-10 border border-slate-700 rounded-full flex items-center justify-center text-slate-400 hover:bg-red-600 hover:text-white hover:border-red-600 transition-all transform hover:scale-110">
+              <a href="https://x.com/MohdImr2711594?t=5hKYTAvVxygvDpQAAkr1PA&s=09" target="_blank" className="w-10 h-10 border border-slate-700 rounded-full flex items-center justify-center text-slate-400 hover:bg-red-600 hover:text-white hover:border-red-600 transition-all transform hover:scale-110">
                 <Twitter className="w-5 h-5" />
               </a>
-              <a href="#" className="w-10 h-10 border border-slate-700 rounded-full flex items-center justify-center text-slate-400 hover:bg-red-600 hover:text-white hover:border-red-600 transition-all transform hover:scale-110">
+              <a href="https://www.instagram.com/imrankhan788698?igsh=enE2c2V2NzI4em02" target="_blank" className="w-10 h-10 border border-slate-700 rounded-full flex items-center justify-center text-slate-400 hover:bg-red-600 hover:text-white hover:border-red-600 transition-all transform hover:scale-110">
                 <Instagram className="w-5 h-5" />
               </a>
-              <a href="#" className="w-10 h-10 border border-slate-700 rounded-full flex items-center justify-center text-slate-400 hover:bg-red-600 hover:text-white hover:border-red-600 transition-all transform hover:scale-110">
-                <Linkedin className="w-5 h-5" />
+              <a
+                href="https://wa.me/918109279412"
+                target="_blank"
+                className="w-10 h-10 border border-slate-700 rounded-full flex items-center justify-center text-slate-400 hover:bg-green-600 hover:text-white hover:border-green-600 transition-all transform hover:scale-110"
+              >
+                <FaWhatsapp className="w-5 h-5" />
               </a>
+
             </div>
           </div>
 
@@ -86,7 +92,7 @@ export function Footer() {
             <ul className="space-y-3">
               <li><Link href="/about" className="text-slate-400 hover:text-red-500 hover:translate-x-1 transition-all duration-300 block">About Us</Link></li>
               <li><Link href="/blog" className="text-slate-400 hover:text-red-500 hover:translate-x-1 transition-all duration-300 block">Blog</Link></li>
-              <li><Link href="/faq" className="text-slate-400 hover:text-red-500 hover:translate-x-1 transition-all duration-300 block">FAQ</Link></li>
+              {/* <li><Link href="/faq" className="text-slate-400 hover:text-red-500 hover:translate-x-1 transition-all duration-300 block">FAQ</Link></li> */}
               {/* <li><Link href="/careers" className="text-slate-400 hover:text-red-500 hover:translate-x-1 transition-all duration-300 block">Careers</Link></li> */}
               <li><Link href="/contact" className="text-slate-400 hover:text-red-500 hover:translate-x-1 transition-all duration-300 block">Contact Us</Link></li>
             </ul>
