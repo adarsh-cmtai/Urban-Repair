@@ -16,16 +16,16 @@ const BuybackCard = ({ category, onSellClick }: { category: any, onSellClick: ()
     className="group bg-white rounded-2xl border border-slate-200/60 shadow-lg transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 hover:border-red-300 overflow-hidden flex flex-col h-full cursor-pointer"
     onClick={onSellClick}
   >
-    <div className="h-48 w-full overflow-hidden bg-slate-50 p-4 flex items-center justify-center">
+    <div className="w-full aspect-[4/3] bg-slate-50 relative">
       <img
         src={category.imageUrl}
         alt={category.name}
-        className="max-w-full max-h-full object-contain transition-transform duration-500 ease-in-out group-hover:scale-105"
+        className="w-full h-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-110"
       />
     </div>
     <div className="p-4 flex flex-col flex-grow">
       <h4 className="font-bold text-lg text-slate-900 mb-2 line-clamp-2 h-14">{category.name}</h4>
-      <p className="text-slate-600 text-sm leading-relaxed mb-4">
+      <p className="text-slate-600 text-sm leading-relaxed mb-4 line-clamp-2 h-10">
         Get the best value for your old {category.name.toLowerCase()}.
       </p>
       <div className="mt-auto pt-3 flex items-center justify-between border-t border-slate-100">
@@ -71,7 +71,7 @@ export function BuybackSection() {
     setIsModalOpen(true);
   };
 
-  const customStyles = `.swiper-button-next, .swiper-button-prev { background-color: white; border-radius: 9999px; width: 44px; height: 44px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1); border: 1px solid #e5e7eb; transition: all 0.2s ease-in-out; } .swiper-button-next:hover, .swiper-button-prev:hover { background-color: #fef2f2; transform: scale(1.05); } .swiper-button-next:after, .swiper-button-prev:after { font-size: 18px; font-weight: 700; color: #dc2626; } .swiper-button-disabled { opacity: 0.4; cursor: not-allowed; }`;
+  const customStyles = `.swiper-button-next, .swiper-button-prev { background-color: white; border-radius: 9999px; width: 44px; height: 44px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1); border: 1px solid #e5e7eb; transition: all 0.2s ease-in-out; } .swiper-button-next:hover, .swiper-button-prev:hover { background-color: #fef2f2; transform: scale(1.05); } .swiper-button-next:after, .swiper-button-prev:after { font-size: 18px; font-weight: 700; color: #dc2626; } .swiper-button-disabled { opacity: 0.4; cursor: not-allowed; } .swiper-wrapper { align-items: stretch; }`;
 
   return (
     <section className="bg-gradient-to-b from-white to-slate-50 py-16 sm:py-20 overflow-hidden">

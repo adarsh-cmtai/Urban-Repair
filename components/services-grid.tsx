@@ -178,9 +178,13 @@ export function SellApplianceSection() {
             {activeCategory.subServices.map((service) => (
               <SwiperSlide key={service.subServiceId} className="h-full">
                 <Link href={`/services/${service.serviceId}`} className="group h-full flex">
-                  <Card className="bg-white rounded-2xl border border-slate-200/60 shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-2 hover:border-red-400 overflow-hidden flex flex-col w-full">
-                    <div className="h-40 w-full overflow-hidden">
-                      <img src={service.image} alt={service.title} className="w-full h-full object-cover rounded-lg transition-transform duration-500 ease-in-out group-hover:scale-110" />
+                  <Card className="bg-white rounded-2xl border border-slate-200/60 shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-2 hover:border-red-400 overflow-hidden flex flex-col w-full p-0">
+                    <div className="w-full aspect-[4/3] bg-slate-50 relative">
+                      <img 
+                        src={service.image} 
+                        alt={service.title} 
+                        className="w-full h-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-110" 
+                      />
                     </div>
                     <CardContent className="p-4 flex flex-col flex-grow">
                       <p className="text-xs font-semibold text-red-600 mb-1">{service.parentServiceName}</p>
