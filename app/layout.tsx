@@ -6,8 +6,7 @@ import { Suspense } from "react";
 import { ReduxProvider } from "@/components/ReduxProvider";
 import { AppInitializer } from "@/components/AppInitializer";
 import { Toaster } from "react-hot-toast";
-import { FaWhatsapp, FaFacebookF, FaInstagram } from "react-icons/fa";
-import { FaXTwitter } from "react-icons/fa6";
+import SocialSidebar from "@/components/SocialSidebar";
 import "./globals.css";
 
 const inter = Inter({
@@ -26,57 +25,6 @@ export const metadata: Metadata = {
   title: "Urban Repair - Your Complete Home Care Partner",
   description:
     "Expert appliance repair, interior design, and appliance buying/selling services in Hyderabad.",
-};
-
-const SocialSidebar = () => {
-  const socials = [
-    {
-      icon: FaWhatsapp,
-      color: "bg-[#25D366]",
-      href: "https://wa.me/918109279412",
-      label: "WHATSAPP",
-    },
-    {
-      icon: FaFacebookF,
-      color: "bg-[#1877F2]",
-      href: "https://www.facebook.com/share/14VfaWnjsyF/",
-      label: "FACEBOOK",
-    },
-    {
-      icon: FaInstagram,
-      color: "bg-gradient-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888]",
-      href: "https://www.instagram.com/imrankhan788698?igsh=enE2c2V2NzI4em02",
-      label: "INSTAGRAM",
-    },
-    {
-      icon: FaXTwitter,
-      color: "bg-black",
-      href: "https://x.com/MohdImr2711594?t=5hKYTAvVxygvDpQAAkr1PA&s=09",
-      label: "TWITTER",
-    },
-  ];
-
-  return (
-    <div className="fixed right-0 top-1/2 z-50 flex -translate-y-1/2 flex-col gap-1">
-      {socials.map((social, index) => (
-        <a
-          key={index}
-          href={social.href}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label={social.label}
-          className={`${social.color} relative flex h-14 w-48 items-center justify-start rounded-l-full text-white shadow-md transition-transform duration-300 ease-in-out translate-x-[calc(100%-3.5rem)] hover:translate-x-0 hover:shadow-2xl`}
-        >
-          <div className="flex h-14 w-14 shrink-0 items-center justify-center">
-            <social.icon className="h-7 w-7" />
-          </div>
-          <span className="pl-2 text-sm font-bold tracking-wider font-montserrat whitespace-nowrap">
-            {social.label}
-          </span>
-        </a>
-      ))}
-    </div>
-  );
 };
 
 export default function RootLayout({

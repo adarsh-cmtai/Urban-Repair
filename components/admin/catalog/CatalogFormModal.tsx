@@ -1,12 +1,10 @@
-// src/components/admin/catalog/CatalogFormModal.tsx
-
 'use client';
 
 import { useState, useEffect, Fragment, FormEvent } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { getUploadPresignedUrl, getAdminLocations } from '@/services/adminService';
 import { toast } from 'react-hot-toast';
-import { Loader2, UploadCloud, X, Plus, Trash2, Tag, IndianRupee, Clock, List, ListX, ShieldQuestion, MapPin } from 'lucide-react';
+import { Loader2, UploadCloud, X, Plus, Trash2, Tag, IndianRupee, Clock, List, ListX, ShieldQuestion, MapPin, AlignLeft } from 'lucide-react';
 
 const FormInput = ({ icon: Icon, ...props }: { icon: React.ElementType, [key: string]: any }) => (
     <div className="relative">
@@ -14,6 +12,14 @@ const FormInput = ({ icon: Icon, ...props }: { icon: React.ElementType, [key: st
         <input {...props} className="pl-10 w-full h-12 text-base bg-slate-100 rounded-lg border-slate-300 focus:ring-red-500 focus:border-red-500" />
     </div>
 );
+
+const FormTextArea = ({ icon: Icon, ...props }: { icon: React.ElementType, [key: string]: any }) => (
+    <div className="relative">
+        <Icon className="absolute left-3 top-4 w-5 h-5 text-slate-400 pointer-events-none" />
+        <textarea {...props} className="pl-10 py-3 w-full h-24 text-base bg-slate-100 rounded-lg border-slate-300 focus:ring-red-500 focus:border-red-500 resize-none" />
+    </div>
+);
+
 const FormSelect = ({ icon: Icon, children, ...props }: { icon: React.ElementType, children: React.ReactNode, [key: string]: any }) => (
     <div className="relative">
         <Icon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none" />
@@ -28,11 +34,11 @@ export function CatalogFormModal({ isOpen, onClose, onSuccess, initialData, item
         name: '',
         imageUrl: '',
         price: '',
+        description: '',
         duration: '',
         inclusions: [] as string[],
         exclusions: [] as string[],
         serviceableLocations: [] as string[],
-        // Sub-Service ke liye `type` field
         type: 'Appliance',
     });
     const [allLocations, setAllLocations] = useState([]);
@@ -47,6 +53,7 @@ export function CatalogFormModal({ isOpen, onClose, onSuccess, initialData, item
                 name: initialData?.name || '',
                 imageUrl: initialData?.imageUrl || '',
                 price: initialData?.price || '',
+                description: initialData?.description || '',
                 duration: initialData?.duration || '',
                 inclusions: initialData?.inclusions || [],
                 exclusions: initialData?.exclusions || [],
@@ -60,7 +67,7 @@ export function CatalogFormModal({ isOpen, onClose, onSuccess, initialData, item
         }
     }, [initialData, isOpen, itemType, token]);
     
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
     };
     
@@ -118,7 +125,15 @@ export function CatalogFormModal({ isOpen, onClose, onSuccess, initialData, item
                 finalData = serviceData;
             }
             
-            if ((itemType === 'Service' || itemType === 'Sub-Service')) {
+            if (itemType === 'Rate Card') {
+                finalData = {
+                    name: formData.name,
+                    description: formData.description,
+                    price: parseFloat(price)
+                };
+            }
+            
+            if ((itemType === 'Service' || itemType === 'Sub-Service' || itemType === 'Rate Card')) {
                 if (!price || parseFloat(price) <= 0) {
                     toast.error('Please enter a valid price.');
                     setIsSubmitting(false);
@@ -153,14 +168,24 @@ export function CatalogFormModal({ isOpen, onClose, onSuccess, initialData, item
                     <Dialog.Panel className="relative w-full max-w-3xl transform rounded-2xl bg-white shadow-xl flex flex-col">
                         <div className="flex items-center justify-between p-6 border-b"><Dialog.Title as="h3" className="font-heading text-xl font-bold text-slate-800">{isEditMode ? `Edit ${itemType}` : `Add New ${itemType}`}</Dialog.Title><button onClick={onClose} className="p-2 rounded-full hover:bg-slate-100"><X className="text-slate-500"/></button></div>
                         <form onSubmit={handleSubmit} className="p-6 space-y-6 overflow-y-auto max-h-[70vh]">
-                            <label htmlFor="file-upload" className="cursor-pointer group relative flex justify-center items-center rounded-xl border-2 border-dashed border-slate-300 h-48">
-                                {isUploading ? <div className="text-center"><Loader2 className="animate-spin w-8 h-8 text-red-600 mx-auto" /><p className="mt-2 text-sm text-slate-500">Uploading...</p></div>
-                                : formData.imageUrl ? <><img src={formData.imageUrl} alt="Uploaded" className="max-h-full max-w-full object-contain rounded-md"/><div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center rounded-xl"><span className="text-white font-semibold text-sm">Change Image</span></div></>
-                                : <div className="text-center text-slate-500"><UploadCloud className="mx-auto w-10 h-10" /><p className="mt-2 text-sm font-semibold">Click to upload image</p></div>}
-                                <input id="file-upload" type="file" className="sr-only" onChange={handleFileChange} accept="image/*" disabled={isUploading}/>
-                            </label>
+                            {itemType !== 'Rate Card' && (
+                                <label htmlFor="file-upload" className="cursor-pointer group relative flex justify-center items-center rounded-xl border-2 border-dashed border-slate-300 h-48">
+                                    {isUploading ? <div className="text-center"><Loader2 className="animate-spin w-8 h-8 text-red-600 mx-auto" /><p className="mt-2 text-sm text-slate-500">Uploading...</p></div>
+                                    : formData.imageUrl ? <><img src={formData.imageUrl} alt="Uploaded" className="max-h-full max-w-full object-contain rounded-md"/><div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center rounded-xl"><span className="text-white font-semibold text-sm">Change Image</span></div></>
+                                    : <div className="text-center text-slate-500"><UploadCloud className="mx-auto w-10 h-10" /><p className="mt-2 text-sm font-semibold">Click to upload image</p></div>}
+                                    <input id="file-upload" type="file" className="sr-only" onChange={handleFileChange} accept="image/*" disabled={isUploading}/>
+                                </label>
+                            )}
+
                             <FormInput icon={Tag} name="name" value={formData.name} onChange={handleChange} placeholder={`${itemType} Name`} required />
-                            {(itemType === 'Service' || itemType === 'Sub-Service') && <FormInput icon={IndianRupee} name="price" type="number" value={formData.price} onChange={handleChange} placeholder="Price" required min="1" step="0.01" />}
+                            
+                            {(itemType === 'Service' || itemType === 'Sub-Service' || itemType === 'Rate Card') && (
+                                <FormInput icon={IndianRupee} name="price" type="number" value={formData.price} onChange={handleChange} placeholder="Service Charge / Price" required min="1" step="0.01" />
+                            )}
+                            
+                            {itemType === 'Rate Card' && (
+                                <FormTextArea icon={AlignLeft} name="description" value={formData.description} onChange={handleChange} placeholder="Description (e.g., Includes diagnosis and minor repairs)" required />
+                            )}
                             
                             {itemType === 'Service' && (
                                 <>

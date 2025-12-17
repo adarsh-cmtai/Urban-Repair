@@ -21,6 +21,11 @@ export const getSubServicesByServiceId = async (serviceId: string) => {
     return data;
 };
 
+export const getRateCardsBySubServiceId = async (subServiceId: string) => {
+    const { data } = await api.get(`/public/catalog/rate-cards?subServiceId=${subServiceId}`);
+    return data;
+};
+
 export const searchLocations = async (query: string) => {
     const { data } = await api.get(`/public/locations/search?query=${query}`);
     return data;

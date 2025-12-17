@@ -114,6 +114,25 @@ export const updateSubService = async (id: string, subServiceData: any, token: s
     return data;
 };
 
+
+export const createRateCard = async (rateCardData: any, token: string) => {
+    const { data } = await api.post('/admin/catalog/rate-cards', rateCardData, { headers: { Authorization: `Bearer ${token}` } });
+    return data;
+};
+export const getAdminRateCards = async (subServiceId: string, token: string) => {
+    const { data } = await api.get(`/admin/catalog/rate-cards?subServiceId=${subServiceId}`, { headers: { Authorization: `Bearer ${token}` } });
+    return data;
+};
+export const updateRateCard = async (id: string, rateCardData: any, token: string) => {
+    const { data } = await api.put(`/admin/catalog/rate-cards/${id}`, rateCardData, { headers: { Authorization: `Bearer ${token}` } });
+    return data;
+};
+export const deleteRateCard = async (id: string, token: string) => {
+    return api.delete(`/admin/catalog/rate-cards/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+};
+
+
+
 export const createBlog = async (blogData: any, token: string) => {
     const { data } = await api.post('/admin/blogs', blogData, { headers: { Authorization: `Bearer ${token}` } });
     return data;
