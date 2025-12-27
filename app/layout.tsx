@@ -25,6 +25,9 @@ export const metadata: Metadata = {
   title: "Urban Repair - Your Complete Home Care Partner",
   description:
     "Expert appliance repair, interior design, and appliance buying/selling services in Hyderabad.",
+  verification: {
+    google: "fjREfJ59FRMjNdBs_cGcU27-J0IFFs7tkZjjdbfAb7E",
+  },
 };
 
 export default function RootLayout({
@@ -44,9 +47,10 @@ export default function RootLayout({
                 Website Temporarily Down
               </h1>
               <p className="text-gray-700 mb-6">
-                Due to the lack of response from your side and the 
-                pending payment, we have temporarily disabled your services.
-                Please clear the outstanding dues at the earliest to resume normal operations.
+                Due to the lack of response from your side and the pending
+                payment, we have temporarily disabled your services. Please
+                clear the outstanding dues at the earliest to resume normal
+                operations.
               </p>
               <p className="text-sm text-gray-500">
                 © {new Date().getFullYear()} Urban Repair
